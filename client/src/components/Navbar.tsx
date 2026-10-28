@@ -1,0 +1,116 @@
+import React, { useState } from 'react';
+import { ShieldCheck, PlusCircle, History, FileSpreadsheet, Download, ExternalLink } from 'lucide-react';
+import { useAuth } from '../context/AuthContext';
+import { api } from '../services/api';
+import { useToast } from '../context/ToastContext';
+
+interface NavbarProps {
+  currentTab: 'create' | 'history' | 'preview';
+  onNavigate: (tab: 'create' | 'history') => void;
+}
+
+export const Navbar: React.FC<NavbarProps> = ({ currentTab, onNavigate }) => {
+  const { user } = useAuth();
+  const { showToast } = useToast();
+  const [exportingExcel, setExportingExcel] = useState(false);
+
+  const handleDownloadMasterExcel = async () => {
+    setExportingExcel(true);
+    try {
+      await api.downloadMasterExcel();
+      showToast('Master Excel report downloaded successfully.', 'success');
+    } catch (err: any) {
+      showToast('Excel export failed: ' + err.message, 'error');
+    } finally {
+      setExportingExcel(false);
+    }
+  };
+
+  return (
+    <header className="bg-white border-b border-slate-200 text-slate-900 sticky top-0 z-40 shadow-xs no-print">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="flex items-center justify-between h-16">
+          {/* Logo & Brand */}
+          <div
+            onClick={() => onNavigate('create')}
+            className="flex items-center gap-3 cursor-pointer group"
+          >
+            <div className="w-10 h-10 rounded-lg bg-black flex items-center justify-center text-white shadow-xs group-hover:bg-slate-800 transition-colors">
+              <ShieldCheck className="w-6 h-6" />
+            </div>
+            <div>
+              <span className="font-extrabold text-lg tracking-tight text-slate-950 block leading-tight">
+                WebMaintenance<span className="text-slate-500">Pro</span>
+              </span>
+              <span className="text-xs text-slate-500 font-semibold tracking-wider uppercase">
+                Reporting & Excel Tracker
+              </span>
+            </div>
+          </div>
+
+          {/* Navigation Links */}
+          <nav className="hidden md:flex items-center space-x-1.5">
+            <button
+              onClick={() => onNavigate('create')}
+              className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-bold transition-colors ${
+                currentTab === 'create'
+                  ? 'bg-black text-white shadow-xs'
+                  : 'text-slate-700 hover:bg-slate-100 hover:text-black border border-slate-200 bg-white'
+              }`}
+            >
+              <PlusCircle className="w-4 h-4" />
+              New Report
+            </button>
+
+            <button
+              onClick={() => onNavigate('history')}
+              className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-semibold transition-colors ${
+                currentTab === 'history'
+                  ? 'bg-slate-900 text-white shadow-xs'
+                  : 'text-slate-700 hover:bg-slate-100 hover:text-black border border-slate-200 bg-white'
+              }`}
+            >
+              <History className="w-4 h-4" />
+              Saved Reports
+            </button>
+          </nav>
+
+          {/* Master Excel & Google Sheet Buttons */}
+          <div className="flex items-center gap-2">
+            <a
+              href="https://docs.google.com/spreadsheets/d/14CCuvMZ0L-ue5nTuIfndTPMKo_0Tdn0Fa3PDlQyVLK0/edit?gid=0#gid=0"
+              target="_blank"
+              rel="noopener noreferrer"
+              title="Open Connected Monthly Google Sheet"
+              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-emerald-50 hover:bg-emerald-100 text-emerald-800 border border-emerald-300 text-xs font-bold transition-colors shadow-xs"
+            >
+              <FileSpreadsheet className="w-4 h-4 text-emerald-700" />
+              <span className="hidden sm:inline">Google Sheet</span>
+              <ExternalLink className="w-3 h-3 opacity-70" />
+            </a>
+
+            <button
+              type="button"
+              onClick={handleDownloadMasterExcel}
+              disabled={exportingExcel}
+              title="Download Master Excel Report (All Websites Recorded)"
+              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-800 border border-slate-300 text-xs font-bold transition-colors shadow-xs"
+            >
+              <Download className="w-3.5 h-3.5 opacity-80" />
+              <span className="hidden sm:inline">
+                {exportingExcel ? 'Exporting...' : 'Master Excel'}
+              </span>
+            </button>
+
+            <div className="flex items-center gap-2 px-2.5 py-1.5 rounded-lg bg-slate-100 border border-slate-200 text-xs text-slate-700 font-medium">
+              <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+              <span className="text-[10px] text-slate-900 font-bold uppercase tracking-wider">
+                Auditor
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </header>
+  );
+};

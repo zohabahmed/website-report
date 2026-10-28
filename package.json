@@ -1,0 +1,24 @@
+{
+  "name": "website-maintenance-reporter",
+  "version": "1.0.0",
+  "description": "Website Maintenance & Upgrade Reporting Tool - Enterprise Client Reports",
+  "scripts": {
+    "build:client": "npm --prefix client run build",
+    "build:server": "npm --prefix server run build",
+    "build": "npm --prefix client run build && npm --prefix server run build",
+    "start": "npm --prefix server start",
+    "dev:server": "npm --prefix server run dev",
+    "dev:client": "npm --prefix client run dev",
+    "migrate": "npm --prefix server run migrate",
+    "seed": "npm --prefix server run seed"
+  },
+  "keywords": [
+    "wordpress",
+    "maintenance",
+    "reporting",
+    "cloudways",
+    "security-audit"
+  ],
+  "author": "",
+  "license": "ISC"
+}

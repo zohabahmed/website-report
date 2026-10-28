@@ -1,0 +1,1054 @@
+{
+  "users": [
+    {
+      "id": "user-admin-default",
+      "email": "admin@maintenance.com",
+      "passwordHash": "$2a$10$5jjkLZc941ztS3WLd0PQ/uR5CNMLQAdGYIGGBJwxry0HlzERKeOp.",
+      "name": "Administrator",
+      "role": "admin"
+    }
+  ],
+  "reports": [
+    {
+      "id": "2a48f504-bb47-41dc-a250-bfc05a41aca1",
+      "websiteUrl": "https://example.com",
+      "websiteName": "Example Storefront",
+      "clientName": "Acme Global Commerce",
+      "reportDate": "2026-10-28",
+      "preparedBy": "DevOps Senior Engineer",
+      "totalTasks": 12,
+      "completedTasks": 9,
+      "incompleteTasks": 3,
+      "completionPercentage": 75,
+      "tasks": [
+        {
+          "id": "task-plugin-upgrade",
+          "name": "Plugin Upgrade",
+          "description": "Review and update all installed WordPress plugins to their latest secure versions and verify compatibility.",
+          "status": "Done",
+          "notes": "Updated WooCommerce (9.4.0), Yoast SEO (23.9), and Elementor (3.25.1). Compatibility tested in staging.",
+          "isCustom": false,
+          "orderIndex": 1
+        },
+        {
+          "id": "task-theme-upgrade",
+          "name": "Theme Upgrade",
+          "description": "Review and update active and installed WordPress themes to ensure design integrity and security patches.",
+          "status": "Done",
+          "notes": "Astra Pro theme updated to v4.8.2. Child theme template overrides verified.",
+          "isCustom": false,
+          "orderIndex": 2
+        },
+        {
+          "id": "task-wp-config",
+          "name": "WP-Config Code",
+          "description": "Implement required security, debug, and performance configurations in the wp-config.php file.",
+          "status": "Undone",
+          "notes": "Pending security salts update and memory limit raise to 512M.",
+          "isCustom": false,
+          "orderIndex": 3,
+          "meta": {
+            "configChanges": "Pending WP_MEMORY_LIMIT and DISALLOW_FILE_EDIT"
+          }
+        },
+        {
+          "id": "task-php-version",
+          "name": "PHP Version",
+          "description": "Record and verify the server PHP runtime version meets WordPress minimum security and performance requirements.",
+          "status": "Done",
+          "notes": "Server upgraded to PHP 8.3 with OPcache active.",
+          "isCustom": false,
+          "orderIndex": 4,
+          "meta": {
+            "phpVersion": "PHP 8.3"
+          }
+        },
+        {
+          "id": "task-2fa",
+          "name": "Two-Factor Authentication (2FA)",
+          "description": "Configure and enforce two-factor authentication (2FA) on administrative and editor accounts.",
+          "status": "Done",
+          "notes": "Configured via Wordfence 2FA for all users with Administrator and Editor roles.",
+          "isCustom": false,
+          "orderIndex": 5
+        },
+        {
+          "id": "task-user-accounts",
+          "name": "User Accounts and Email Addresses",
+          "description": "Audit WordPress user accounts, assign least-privilege roles, and verify associated email addresses and 2FA status.",
+          "status": "Done",
+          "notes": "Audited 3 administrative accounts. Stale developer credentials removed.",
+          "isCustom": false,
+          "orderIndex": 6
+        },
+        {
+          "id": "task-elastic-email",
+          "name": "Elastic Email",
+          "description": "Configure, authenticate (SPF/DKIM/DMARC), and send test emails via Elastic Email SMTP relay.",
+          "status": "Undone",
+          "notes": "DNS SPF and DKIM verified; SMTP test email queue still pending client verification.",
+          "isCustom": false,
+          "orderIndex": 7
+        },
+        {
+          "id": "task-qa",
+          "name": "Website QA (Quality Assurance)",
+          "description": "Perform comprehensive QA checks: accessibility, navigation & links, forms, responsiveness, page load speed, and critical functionality.",
+          "status": "Done",
+          "notes": "Checkout flow, gravity forms, SSL certificate, and responsive mobile navigation fully tested.",
+          "isCustom": false,
+          "orderIndex": 8,
+          "meta": {
+            "qaChecks": {
+              "accessibility": true,
+              "navigation": true,
+              "forms": true,
+              "responsive": true,
+              "performance": true,
+              "criticalFunctions": true
+            }
+          }
+        },
+        {
+          "id": "task-wp-core",
+          "name": "WordPress Core Upgrade",
+          "description": "Review WordPress core installation, apply latest security and maintenance release, and confirm database updates.",
+          "status": "Done",
+          "notes": "WordPress Core updated to 6.7.1 without database errors.",
+          "isCustom": false,
+          "orderIndex": 9,
+          "meta": {
+            "wpVersion": "6.7.1"
+          }
+        },
+        {
+          "id": "dcea6247-caf3-40df-8b07-6290ebc36e81",
+          "name": "Off-site Cloud Backup",
+          "description": "Run full snapshot of database and uploads to AWS S3 prior to updates.",
+          "status": "Done",
+          "notes": "Full snapshot (1.4 GB) verified in AWS S3 Frankfurt bucket.",
+          "isCustom": true,
+          "orderIndex": 10
+        },
+        {
+          "id": "cea1cec2-25e6-41b6-bd3c-123f9da0e7e3",
+          "name": "Malware & Security Scan",
+          "description": "Deep integrity scan of core files and wp-content uploads folder.",
+          "status": "Done",
+          "notes": "Zero malware signatures found. File integrity check 100% clean.",
+          "isCustom": true,
+          "orderIndex": 11
+        },
+        {
+          "id": "d24a7b2f-9cd6-4df9-a82e-9b61d8ef47b2",
+          "name": "Cloudflare CDN Cache Purge & SSL Validation",
+          "description": "Purge edge cache and verify TLS 1.3 full encryption mode.",
+          "status": "Undone",
+          "notes": "Pending edge cache purge verification after staging review.",
+          "isCustom": true,
+          "orderIndex": 12
+        }
+      ],
+      "wordpressUsers": [
+        {
+          "id": "889c37b2-a7c7-45ae-b85a-acea18e20c02",
+          "username": "acme_admin",
+          "email": "ops@example.com",
+          "role": "Administrator",
+          "twoFactorStatus": "Enabled",
+          "notes": "Primary IT Contact"
+        },
+        {
+          "id": "9d6f176e-540e-4b56-a2e8-064953d779ad",
+          "username": "marketing_lead",
+          "email": "editor@example.com",
+          "role": "Editor",
+          "twoFactorStatus": "Enabled",
+          "notes": "Marketing team publisher"
+        },
+        {
+          "id": "bc977eaa-5323-45b7-a4aa-83ef128f63dd",
+          "username": "support_staff",
+          "email": "help@example.com",
+          "role": "Author",
+          "twoFactorStatus": "Disabled",
+          "notes": "Requires 2FA activation next cycle"
+        }
+      ],
+      "executiveSummary": "This report summarizes the WordPress maintenance, upgrade, security configuration, email delivery, and quality assurance tasks recorded for example.com as of 2026-10-28. Completed areas include WordPress core, plugins, themes, server & config, two-factor authentication, quality assurance. Remaining incomplete items require further action as documented below.",
+      "finalSummary": "Of the 12 maintenance tasks recorded for this website, 9 are marked as completed and 3 remain incomplete. The overall completion rate is 75%. Specific pending items include: WP-Config Code, Elastic Email, Cloudflare CDN Cache Purge & SSL Validation. The website should not be treated as fully maintained or secure until these outstanding items are addressed.",
+      "createdAt": "2026-10-25T20:38:04.966Z",
+      "updatedAt": "2026-10-27T20:38:04.967Z"
+    },
+    {
+      "id": "9a1ad834-f6b7-4fe7-abe2-a4b2dd11c38d",
+      "websiteUrl": "https://techcorp-consulting.io",
+      "websiteName": "TechCorp Consulting",
+      "clientName": "TechCorp International",
+      "reportDate": "2026-10-27",
+      "preparedBy": "Maintenance Lead",
+      "totalTasks": 9,
+      "completedTasks": 9,
+      "incompleteTasks": 0,
+      "completionPercentage": 100,
+      "tasks": [
+        {
+          "id": "task-plugin-upgrade",
+          "name": "Plugin Upgrade",
+          "description": "Review and update all installed WordPress plugins to their latest secure versions and verify compatibility.",
+          "status": "Done",
+          "notes": "Verified and completed according to standard operating procedures.",
+          "isCustom": false,
+          "orderIndex": 1
+        },
+        {
+          "id": "task-theme-upgrade",
+          "name": "Theme Upgrade",
+          "description": "Review and update active and installed WordPress themes to ensure design integrity and security patches.",
+          "status": "Done",
+          "notes": "Verified and completed according to standard operating procedures.",
+          "isCustom": false,
+          "orderIndex": 2
+        },
+        {
+          "id": "task-wp-config",
+          "name": "WP-Config Code",
+          "description": "Implement required security, debug, and performance configurations in the wp-config.php file.",
+          "status": "Done",
+          "notes": "Verified and completed according to standard operating procedures.",
+          "isCustom": false,
+          "orderIndex": 3,
+          "meta": {
+            "configChanges": ""
+          }
+        },
+        {
+          "id": "task-php-version",
+          "name": "PHP Version",
+          "description": "Record and verify the server PHP runtime version meets WordPress minimum security and performance requirements.",
+          "status": "Done",
+          "notes": "Verified and completed according to standard operating procedures.",
+          "isCustom": false,
+          "orderIndex": 4,
+          "meta": {
+            "phpVersion": "PHP 8.3"
+          }
+        },
+        {
+          "id": "task-2fa",
+          "name": "Two-Factor Authentication (2FA)",
+          "description": "Configure and enforce two-factor authentication (2FA) on administrative and editor accounts.",
+          "status": "Done",
+          "notes": "Verified and completed according to standard operating procedures.",
+          "isCustom": false,
+          "orderIndex": 5
+        },
+        {
+          "id": "task-user-accounts",
+          "name": "User Accounts and Email Addresses",
+          "description": "Audit WordPress user accounts, assign least-privilege roles, and verify associated email addresses and 2FA status.",
+          "status": "Done",
+          "notes": "Verified and completed according to standard operating procedures.",
+          "isCustom": false,
+          "orderIndex": 6
+        },
+        {
+          "id": "task-elastic-email",
+          "name": "Elastic Email",
+          "description": "Configure, authenticate (SPF/DKIM/DMARC), and send test emails via Elastic Email SMTP relay.",
+          "status": "Done",
+          "notes": "Verified and completed according to standard operating procedures.",
+          "isCustom": false,
+          "orderIndex": 7
+        },
+        {
+          "id": "task-qa",
+          "name": "Website QA (Quality Assurance)",
+          "description": "Perform comprehensive QA checks: accessibility, navigation & links, forms, responsiveness, page load speed, and critical functionality.",
+          "status": "Done",
+          "notes": "Verified and completed according to standard operating procedures.",
+          "isCustom": false,
+          "orderIndex": 8,
+          "meta": {
+            "qaChecks": {
+              "accessibility": false,
+              "navigation": false,
+              "forms": false,
+              "responsive": false,
+              "performance": false,
+              "criticalFunctions": false
+            }
+          }
+        },
+        {
+          "id": "task-wp-core",
+          "name": "WordPress Core Upgrade",
+          "description": "Review WordPress core installation, apply latest security and maintenance release, and confirm database updates.",
+          "status": "Done",
+          "notes": "Verified and completed according to standard operating procedures.",
+          "isCustom": false,
+          "orderIndex": 9,
+          "meta": {
+            "wpVersion": "6.7.1"
+          }
+        }
+      ],
+      "wordpressUsers": [
+        {
+          "id": "7ef2002e-ab12-4044-beea-7860c7b4d655",
+          "username": "sysadmin_tc",
+          "email": "sysadmin@techcorp-consulting.io",
+          "role": "Administrator",
+          "twoFactorStatus": "Enabled",
+          "notes": "Hardware security key enforced"
+        }
+      ],
+      "executiveSummary": "This report summarizes the WordPress maintenance, upgrade, security configuration, email delivery, and quality assurance tasks recorded for techcorp-consulting.io as of 2026-10-27. All scheduled maintenance, upgrade, and verification items have been successfully executed.",
+      "finalSummary": "All 9 recorded maintenance tasks for this website are marked as completed, achieving a 100% completion rate. All core, plugin, theme, and security checks have been documented and fulfilled.",
+      "createdAt": "2026-10-22T20:38:04.968Z",
+      "updatedAt": "2026-10-22T20:38:04.968Z"
+    },
+    {
+      "id": "b64f5d09-7f66-4755-ae40-b01635ce98cc",
+      "websiteUrl": "https://my-cloudways-client.com",
+      "websiteName": "My Cloudways Client",
+      "clientName": "Horizon Enterprise",
+      "reportDate": "2026-10-28",
+      "preparedBy": "DevOps Lead",
+      "totalTasks": 9,
+      "completedTasks": 2,
+      "incompleteTasks": 7,
+      "completionPercentage": 22,
+      "tasks": [
+        {
+          "id": "task-plugin-upgrade",
+          "name": "Plugin Upgrade",
+          "description": "Review and update all installed WordPress plugins to their latest secure versions and verify compatibility.",
+          "status": "Done",
+          "notes": "Updated WooCommerce and Advanced Custom Fields",
+          "isCustom": false,
+          "orderIndex": 1
+        },
+        {
+          "id": "task-theme-upgrade",
+          "name": "Theme Upgrade",
+          "description": "Review and update active and installed WordPress themes to ensure design integrity and security patches.",
+          "status": "Undone",
+          "notes": "",
+          "isCustom": false,
+          "orderIndex": 2
+        },
+        {
+          "id": "task-wp-config",
+          "name": "WP-Config Code",
+          "description": "Implement required security, debug, and performance configurations in the wp-config.php file.",
+          "status": "Undone",
+          "notes": "",
+          "isCustom": false,
+          "orderIndex": 3,
+          "meta": {
+            "configChanges": ""
+          }
+        },
+        {
+          "id": "task-php-version",
+          "name": "PHP Version",
+          "description": "Record and verify the server PHP runtime version meets WordPress minimum security and performance requirements.",
+          "status": "Done",
+          "notes": "Verified PHP 8.3 OPcache",
+          "isCustom": false,
+          "orderIndex": 4,
+          "meta": {
+            "phpVersion": "PHP 8.3"
+          }
+        },
+        {
+          "id": "task-2fa",
+          "name": "Two-Factor Authentication (2FA)",
+          "description": "Configure and enforce two-factor authentication (2FA) on administrative and editor accounts.",
+          "status": "Undone",
+          "notes": "",
+          "isCustom": false,
+          "orderIndex": 5
+        },
+        {
+          "id": "task-user-accounts",
+          "name": "User Accounts and Email Addresses",
+          "description": "Audit WordPress user accounts, assign least-privilege roles, and verify associated email addresses and 2FA status.",
+          "status": "Undone",
+          "notes": "",
+          "isCustom": false,
+          "orderIndex": 6
+        },
+        {
+          "id": "task-elastic-email",
+          "name": "Elastic Email",
+          "description": "Configure, authenticate (SPF/DKIM/DMARC), and send test emails via Elastic Email SMTP relay.",
+          "status": "Undone",
+          "notes": "",
+          "isCustom": false,
+          "orderIndex": 7
+        },
+        {
+          "id": "task-qa",
+          "name": "Website QA (Quality Assurance)",
+          "description": "Perform comprehensive QA checks: accessibility, navigation & links, forms, responsiveness, page load speed, and critical functionality.",
+          "status": "Undone",
+          "notes": "",
+          "isCustom": false,
+          "orderIndex": 8,
+          "meta": {
+            "qaChecks": {
+              "accessibility": false,
+              "navigation": false,
+              "forms": false,
+              "responsive": false,
+              "performance": false,
+              "criticalFunctions": false
+            }
+          }
+        },
+        {
+          "id": "task-wp-core",
+          "name": "WordPress Core Upgrade",
+          "description": "Review WordPress core installation, apply latest security and maintenance release, and confirm database updates.",
+          "status": "Undone",
+          "notes": "",
+          "isCustom": false,
+          "orderIndex": 9,
+          "meta": {}
+        }
+      ],
+      "wordpressUsers": [
+        {
+          "id": "user-1",
+          "username": "siteadmin",
+          "email": "admin@my-cloudways-client.com",
+          "role": "Administrator",
+          "twoFactorStatus": "Enabled",
+          "notes": "Primary webmaster"
+        }
+      ],
+      "executiveSummary": "This report summarizes the WordPress maintenance, upgrade, security configuration, email delivery, and quality assurance tasks recorded for my-cloudways-client.com as of 2026-10-28. Completed areas include plugins, server & config. Remaining incomplete items require further action as documented below.",
+      "finalSummary": "Of the 9 maintenance tasks recorded for this website, 2 are marked as completed and 7 remain incomplete. The overall completion rate is 22%. The 7 incomplete tasks are detailed in the checklist below for prioritized resolution. The website should not be treated as fully maintained or secure until these outstanding items are addressed.",
+      "createdAt": "2026-10-27T20:38:54.629Z",
+      "updatedAt": "2026-10-27T20:38:54.629Z"
+    },
+    {
+      "id": "97276d63-e499-4dc1-95e6-bc3ab9dbdc6c",
+      "websiteUrl": "https://monthly-client-audit.com",
+      "websiteName": "Monthly-client-audit",
+      "reportDate": "2026-10-28",
+      "preparedBy": "Administrator",
+      "totalTasks": 9,
+      "completedTasks": 2,
+      "incompleteTasks": 7,
+      "completionPercentage": 22,
+      "tasks": [
+        {
+          "id": "task-plugin-upgrade",
+          "name": "Plugin Upgrade",
+          "description": "Review and update all installed WordPress plugins to their latest secure versions and verify compatibility.",
+          "status": "Done",
+          "notes": "Updated all WooCommerce & Elementor plugins",
+          "isCustom": false,
+          "orderIndex": 1
+        },
+        {
+          "id": "task-theme-upgrade",
+          "name": "Theme Upgrade",
+          "description": "Review and update active and installed WordPress themes to ensure design integrity and security patches.",
+          "status": "Undone",
+          "notes": "",
+          "isCustom": false,
+          "orderIndex": 2
+        },
+        {
+          "id": "task-wp-config",
+          "name": "WP-Config Code",
+          "description": "Implement required security, debug, and performance configurations in the wp-config.php file.",
+          "status": "Undone",
+          "notes": "",
+          "isCustom": false,
+          "orderIndex": 3,
+          "meta": {
+            "configChanges": ""
+          }
+        },
+        {
+          "id": "task-php-version",
+          "name": "PHP Version",
+          "description": "Record and verify the server PHP runtime version meets WordPress minimum security and performance requirements.",
+          "status": "Done",
+          "notes": "",
+          "isCustom": false,
+          "orderIndex": 4,
+          "meta": {
+            "phpVersion": "PHP 8.3"
+          }
+        },
+        {
+          "id": "task-2fa",
+          "name": "Two-Factor Authentication (2FA)",
+          "description": "Configure and enforce two-factor authentication (2FA) on administrative and editor accounts.",
+          "status": "Undone",
+          "notes": "",
+          "isCustom": false,
+          "orderIndex": 5
+        },
+        {
+          "id": "task-user-accounts",
+          "name": "User Accounts and Email Addresses",
+          "description": "Audit WordPress user accounts, assign least-privilege roles, and verify associated email addresses and 2FA status.",
+          "status": "Undone",
+          "notes": "",
+          "isCustom": false,
+          "orderIndex": 6
+        },
+        {
+          "id": "task-elastic-email",
+          "name": "Elastic Email",
+          "description": "Configure, authenticate (SPF/DKIM/DMARC), and send test emails via Elastic Email SMTP relay.",
+          "status": "Undone",
+          "notes": "",
+          "isCustom": false,
+          "orderIndex": 7
+        },
+        {
+          "id": "task-qa",
+          "name": "Website QA (Quality Assurance)",
+          "description": "Perform comprehensive QA checks: accessibility, navigation & links, forms, responsiveness, page load speed, and critical functionality.",
+          "status": "Undone",
+          "notes": "",
+          "isCustom": false,
+          "orderIndex": 8,
+          "meta": {
+            "qaChecks": {
+              "accessibility": false,
+              "navigation": false,
+              "forms": false,
+              "responsive": false,
+              "performance": false,
+              "criticalFunctions": false
+            }
+          }
+        },
+        {
+          "id": "task-wp-core",
+          "name": "WordPress Core Upgrade",
+          "description": "Review WordPress core installation, apply latest security and maintenance release, and confirm database updates.",
+          "status": "Undone",
+          "notes": "",
+          "isCustom": false,
+          "orderIndex": 9,
+          "meta": {}
+        }
+      ],
+      "wordpressUsers": [],
+      "executiveSummary": "This report summarizes the WordPress maintenance, upgrade, security configuration, email delivery, and quality assurance tasks recorded for monthly-client-audit.com as of 2026-10-28. Completed areas include plugins, server & config. Remaining incomplete items require further action as documented below.",
+      "finalSummary": "Of the 9 maintenance tasks recorded for this website, 2 are marked as completed and 7 remain incomplete. The overall completion rate is 22%. The 7 incomplete tasks are detailed in the checklist below for prioritized resolution. The website should not be treated as fully maintained or secure until these outstanding items are addressed.",
+      "createdAt": "2026-10-27T20:59:25.370Z",
+      "updatedAt": "2026-10-27T20:59:25.370Z"
+    },
+    {
+      "id": "1b9658d4-5046-45ed-b1d8-1bdd91fd0a85",
+      "websiteUrl": "https://wphide-test-client.com",
+      "websiteName": "Wphide-test-client",
+      "reportDate": "2026-10-28",
+      "preparedBy": "Administrator",
+      "totalTasks": 10,
+      "completedTasks": 1,
+      "incompleteTasks": 9,
+      "completionPercentage": 10,
+      "tasks": [
+        {
+          "id": "task-plugin-upgrade",
+          "name": "Plugin Upgrade",
+          "description": "Review and update all installed WordPress plugins to their latest secure versions and verify compatibility.",
+          "status": "Undone",
+          "notes": "",
+          "isCustom": false,
+          "orderIndex": 1
+        },
+        {
+          "id": "task-theme-upgrade",
+          "name": "Theme Upgrade",
+          "description": "Review and update active and installed WordPress themes to ensure design integrity and security patches.",
+          "status": "Undone",
+          "notes": "",
+          "isCustom": false,
+          "orderIndex": 2
+        },
+        {
+          "id": "task-wp-config",
+          "name": "WP-Config Code",
+          "description": "Implement required security, debug, and performance configurations in the wp-config.php file.",
+          "status": "Undone",
+          "notes": "",
+          "isCustom": false,
+          "orderIndex": 3,
+          "meta": {
+            "configChanges": ""
+          }
+        },
+        {
+          "id": "task-php-version",
+          "name": "PHP Version",
+          "description": "Record and verify the server PHP runtime version meets WordPress minimum security and performance requirements.",
+          "status": "Undone",
+          "notes": "",
+          "isCustom": false,
+          "orderIndex": 4,
+          "meta": {}
+        },
+        {
+          "id": "task-2fa",
+          "name": "Two-Factor Authentication (2FA)",
+          "description": "Configure and enforce two-factor authentication (2FA) on administrative and editor accounts.",
+          "status": "Undone",
+          "notes": "",
+          "isCustom": false,
+          "orderIndex": 5
+        },
+        {
+          "id": "task-user-accounts",
+          "name": "User Accounts and Email Addresses",
+          "description": "Audit WordPress user accounts, assign least-privilege roles, and verify associated email addresses and 2FA status.",
+          "status": "Undone",
+          "notes": "",
+          "isCustom": false,
+          "orderIndex": 6
+        },
+        {
+          "id": "task-elastic-email",
+          "name": "Elastic Email",
+          "description": "Configure, authenticate (SPF/DKIM/DMARC), and send test emails via Elastic Email SMTP relay.",
+          "status": "Undone",
+          "notes": "",
+          "isCustom": false,
+          "orderIndex": 7
+        },
+        {
+          "id": "task-qa",
+          "name": "Website QA (Quality Assurance)",
+          "description": "Perform comprehensive QA checks: accessibility, navigation & links, forms, responsiveness, page load speed, and critical functionality.",
+          "status": "Undone",
+          "notes": "",
+          "isCustom": false,
+          "orderIndex": 8,
+          "meta": {
+            "qaChecks": {
+              "accessibility": false,
+              "navigation": false,
+              "forms": false,
+              "responsive": false,
+              "performance": false,
+              "criticalFunctions": false
+            }
+          }
+        },
+        {
+          "id": "task-wp-core",
+          "name": "WordPress Core Upgrade",
+          "description": "Review WordPress core installation, apply latest security and maintenance release, and confirm database updates.",
+          "status": "Undone",
+          "notes": "",
+          "isCustom": false,
+          "orderIndex": 9,
+          "meta": {}
+        },
+        {
+          "id": "task-wp-hide",
+          "name": "WP-Hide",
+          "description": "Configure and verify WP-Hide security settings to obscure core WordPress assets, login paths, and plugin footprints.",
+          "status": "Done",
+          "notes": "wp-login.php masked, core generator meta removed",
+          "isCustom": false,
+          "orderIndex": 10
+        }
+      ],
+      "wordpressUsers": [],
+      "executiveSummary": "This report summarizes the WordPress maintenance, upgrade, security configuration, email delivery, and quality assurance tasks recorded for wphide-test-client.com as of 2026-10-28. Completed areas include WP-Hide security. Remaining incomplete items require further action as documented below.",
+      "finalSummary": "Of the 10 maintenance tasks recorded for this website, 1 are marked as completed and 9 remain incomplete. The overall completion rate is 10%. The 9 incomplete tasks are detailed in the checklist below for prioritized resolution. The website should not be treated as fully maintained or secure until these outstanding items are addressed.",
+      "createdAt": "2026-10-28T14:00:26.154Z",
+      "updatedAt": "2026-10-28T14:00:26.154Z"
+    },
+    {
+      "id": "6196f1e8-6146-48ab-a810-a7c3ab360fc8",
+      "websiteUrl": "https://no-default-versions-test.com",
+      "websiteName": "No-default-versions-test",
+      "reportDate": "2026-10-28",
+      "preparedBy": "Administrator",
+      "totalTasks": 10,
+      "completedTasks": 0,
+      "incompleteTasks": 10,
+      "completionPercentage": 0,
+      "tasks": [
+        {
+          "id": "task-plugin-upgrade",
+          "name": "Plugin Upgrade",
+          "description": "Review and update all installed WordPress plugins to their latest secure versions and verify compatibility.",
+          "status": "Undone",
+          "notes": "",
+          "isCustom": false,
+          "orderIndex": 1
+        },
+        {
+          "id": "task-theme-upgrade",
+          "name": "Theme Upgrade",
+          "description": "Review and update active and installed WordPress themes to ensure design integrity and security patches.",
+          "status": "Undone",
+          "notes": "",
+          "isCustom": false,
+          "orderIndex": 2
+        },
+        {
+          "id": "task-wp-config",
+          "name": "WP-Config Code",
+          "description": "Implement required security, debug, and performance configurations in the wp-config.php file.",
+          "status": "Undone",
+          "notes": "",
+          "isCustom": false,
+          "orderIndex": 3,
+          "meta": {
+            "configChanges": ""
+          }
+        },
+        {
+          "id": "task-php-version",
+          "name": "PHP Version",
+          "description": "Record and verify the server PHP runtime version meets WordPress minimum security and performance requirements.",
+          "status": "Undone",
+          "notes": "",
+          "isCustom": false,
+          "orderIndex": 4,
+          "meta": {}
+        },
+        {
+          "id": "task-2fa",
+          "name": "Two-Factor Authentication (2FA)",
+          "description": "Configure and enforce two-factor authentication (2FA) on administrative and editor accounts.",
+          "status": "Undone",
+          "notes": "",
+          "isCustom": false,
+          "orderIndex": 5
+        },
+        {
+          "id": "task-user-accounts",
+          "name": "User Accounts and Email Addresses",
+          "description": "Audit WordPress user accounts, assign least-privilege roles, and verify associated email addresses and 2FA status.",
+          "status": "Undone",
+          "notes": "",
+          "isCustom": false,
+          "orderIndex": 6
+        },
+        {
+          "id": "task-elastic-email",
+          "name": "Elastic Email",
+          "description": "Configure, authenticate (SPF/DKIM/DMARC), and send test emails via Elastic Email SMTP relay.",
+          "status": "Undone",
+          "notes": "",
+          "isCustom": false,
+          "orderIndex": 7
+        },
+        {
+          "id": "task-qa",
+          "name": "Website QA (Quality Assurance)",
+          "description": "Perform comprehensive QA checks: accessibility, navigation & links, forms, responsiveness, page load speed, and critical functionality.",
+          "status": "Undone",
+          "notes": "",
+          "isCustom": false,
+          "orderIndex": 8,
+          "meta": {
+            "qaChecks": {
+              "accessibility": false,
+              "navigation": false,
+              "forms": false,
+              "responsive": false,
+              "performance": false,
+              "criticalFunctions": false
+            }
+          }
+        },
+        {
+          "id": "task-wp-core",
+          "name": "WordPress Core Upgrade",
+          "description": "Review WordPress core installation, apply latest security and maintenance release, and confirm database updates.",
+          "status": "Undone",
+          "notes": "",
+          "isCustom": false,
+          "orderIndex": 9,
+          "meta": {}
+        },
+        {
+          "id": "task-wp-hide",
+          "name": "WP-Hide",
+          "description": "Configure and verify WP-Hide security settings to obscure core WordPress assets, login paths, and plugin footprints.",
+          "status": "Undone",
+          "notes": "",
+          "isCustom": false,
+          "orderIndex": 10
+        }
+      ],
+      "wordpressUsers": [],
+      "executiveSummary": "This report summarizes the WordPress maintenance, upgrade, security configuration, email delivery, and quality assurance tasks recorded for no-default-versions-test.com as of 2026-10-28. All scheduled maintenance items are currently pending execution or follow-up.",
+      "finalSummary": "Of the 10 maintenance tasks recorded for this website, none (0) are currently marked as completed, and all 10 remain incomplete. The overall completion rate is 0%. Immediate attention is required to initiate maintenance actions.",
+      "createdAt": "2026-10-28T14:25:20.124Z",
+      "updatedAt": "2026-10-28T14:25:20.124Z"
+    },
+    {
+      "id": "2522eaff-c5e8-4ec9-86b9-33df375517ea",
+      "websiteUrl": "https://with-selected-versions-test.com",
+      "websiteName": "With-selected-versions-test",
+      "reportDate": "2026-10-28",
+      "preparedBy": "Administrator",
+      "totalTasks": 10,
+      "completedTasks": 2,
+      "incompleteTasks": 8,
+      "completionPercentage": 20,
+      "tasks": [
+        {
+          "id": "task-plugin-upgrade",
+          "name": "Plugin Upgrade",
+          "description": "Review and update all installed WordPress plugins to their latest secure versions and verify compatibility.",
+          "status": "Undone",
+          "notes": "",
+          "isCustom": false,
+          "orderIndex": 1
+        },
+        {
+          "id": "task-theme-upgrade",
+          "name": "Theme Upgrade",
+          "description": "Review and update active and installed WordPress themes to ensure design integrity and security patches.",
+          "status": "Undone",
+          "notes": "",
+          "isCustom": false,
+          "orderIndex": 2
+        },
+        {
+          "id": "task-wp-config",
+          "name": "WP-Config Code",
+          "description": "Implement required security, debug, and performance configurations in the wp-config.php file.",
+          "status": "Undone",
+          "notes": "",
+          "isCustom": false,
+          "orderIndex": 3,
+          "meta": {
+            "configChanges": ""
+          }
+        },
+        {
+          "id": "task-php-version",
+          "name": "PHP Version",
+          "description": "Record and verify the server PHP runtime version meets WordPress minimum security and performance requirements.",
+          "status": "Done",
+          "notes": "",
+          "isCustom": false,
+          "orderIndex": 4,
+          "meta": {
+            "phpVersion": "PHP 8.3"
+          }
+        },
+        {
+          "id": "task-2fa",
+          "name": "Two-Factor Authentication (2FA)",
+          "description": "Configure and enforce two-factor authentication (2FA) on administrative and editor accounts.",
+          "status": "Undone",
+          "notes": "",
+          "isCustom": false,
+          "orderIndex": 5
+        },
+        {
+          "id": "task-user-accounts",
+          "name": "User Accounts and Email Addresses",
+          "description": "Audit WordPress user accounts, assign least-privilege roles, and verify associated email addresses and 2FA status.",
+          "status": "Undone",
+          "notes": "",
+          "isCustom": false,
+          "orderIndex": 6
+        },
+        {
+          "id": "task-elastic-email",
+          "name": "Elastic Email",
+          "description": "Configure, authenticate (SPF/DKIM/DMARC), and send test emails via Elastic Email SMTP relay.",
+          "status": "Undone",
+          "notes": "",
+          "isCustom": false,
+          "orderIndex": 7
+        },
+        {
+          "id": "task-qa",
+          "name": "Website QA (Quality Assurance)",
+          "description": "Perform comprehensive QA checks: accessibility, navigation & links, forms, responsiveness, page load speed, and critical functionality.",
+          "status": "Undone",
+          "notes": "",
+          "isCustom": false,
+          "orderIndex": 8,
+          "meta": {
+            "qaChecks": {
+              "accessibility": false,
+              "navigation": false,
+              "forms": false,
+              "responsive": false,
+              "performance": false,
+              "criticalFunctions": false
+            }
+          }
+        },
+        {
+          "id": "task-wp-core",
+          "name": "WordPress Core Upgrade",
+          "description": "Review WordPress core installation, apply latest security and maintenance release, and confirm database updates.",
+          "status": "Done",
+          "notes": "",
+          "isCustom": false,
+          "orderIndex": 9,
+          "meta": {
+            "wpVersion": "6.7.1"
+          }
+        },
+        {
+          "id": "task-wp-hide",
+          "name": "WP-Hide",
+          "description": "Configure and verify WP-Hide security settings to obscure core WordPress assets, login paths, and plugin footprints.",
+          "status": "Undone",
+          "notes": "",
+          "isCustom": false,
+          "orderIndex": 10
+        }
+      ],
+      "wordpressUsers": [],
+      "executiveSummary": "This report summarizes the WordPress maintenance, upgrade, security configuration, email delivery, and quality assurance tasks recorded for with-selected-versions-test.com as of 2026-10-28. Completed areas include WordPress core, server & config. Remaining incomplete items require further action as documented below.",
+      "finalSummary": "Of the 10 maintenance tasks recorded for this website, 2 are marked as completed and 8 remain incomplete. The overall completion rate is 20%. The 8 incomplete tasks are detailed in the checklist below for prioritized resolution. The website should not be treated as fully maintained or secure until these outstanding items are addressed.",
+      "createdAt": "2026-10-28T14:25:38.269Z",
+      "updatedAt": "2026-10-28T14:25:38.269Z"
+    },
+    {
+      "id": "73943f92-23cf-44e9-a96a-a8fe781eeb65",
+      "websiteUrl": "https://webdesignshop.com",
+      "websiteName": "Webdesignshop",
+      "reportDate": "2026-10-28",
+      "preparedBy": "DevOps / QA Auditor",
+      "totalTasks": 10,
+      "completedTasks": 10,
+      "incompleteTasks": 0,
+      "completionPercentage": 100,
+      "tasks": [
+        {
+          "id": "task-plugin-upgrade",
+          "name": "Plugin Upgrade",
+          "description": "Review and update all installed WordPress plugins to their latest secure versions and verify compatibility.",
+          "status": "Done",
+          "notes": "",
+          "isCustom": false,
+          "orderIndex": 1
+        },
+        {
+          "id": "task-theme-upgrade",
+          "name": "Theme Upgrade",
+          "description": "Review and update active and installed WordPress themes to ensure design integrity and security patches.",
+          "status": "Done",
+          "notes": "",
+          "isCustom": false,
+          "orderIndex": 2
+        },
+        {
+          "id": "task-wp-config",
+          "name": "WP-Config Code",
+          "description": "Implement required security, debug, and performance configurations in the wp-config.php file.",
+          "status": "Done",
+          "notes": "",
+          "isCustom": false,
+          "orderIndex": 3,
+          "meta": {
+            "configChanges": ""
+          }
+        },
+        {
+          "id": "task-php-version",
+          "name": "PHP Version",
+          "description": "Record and verify the server PHP runtime version meets WordPress minimum security and performance requirements.",
+          "status": "Done",
+          "notes": "",
+          "isCustom": false,
+          "orderIndex": 4,
+          "meta": {
+            "phpVersion": "PHP 8.2"
+          }
+        },
+        {
+          "id": "task-2fa",
+          "name": "Two-Factor Authentication (2FA)",
+          "description": "Configure and enforce two-factor authentication (2FA) on administrative and editor accounts.",
+          "status": "Done",
+          "notes": "",
+          "isCustom": false,
+          "orderIndex": 5
+        },
+        {
+          "id": "task-user-accounts",
+          "name": "User Accounts and Email Addresses",
+          "description": "Audit WordPress user accounts, assign least-privilege roles, and verify associated email addresses and 2FA status.",
+          "status": "Done",
+          "notes": "",
+          "isCustom": false,
+          "orderIndex": 6
+        },
+        {
+          "id": "task-elastic-email",
+          "name": "Elastic Email",
+          "description": "Configure, authenticate (SPF/DKIM/DMARC), and send test emails via Elastic Email SMTP relay.",
+          "status": "Done",
+          "notes": "",
+          "isCustom": false,
+          "orderIndex": 7
+        },
+        {
+          "id": "task-qa",
+          "name": "Website QA (Quality Assurance)",
+          "description": "Perform comprehensive QA checks: accessibility, navigation & links, forms, responsiveness, page load speed, and critical functionality.",
+          "status": "Done",
+          "notes": "",
+          "isCustom": false,
+          "orderIndex": 8,
+          "meta": {
+            "qaChecks": {
+              "accessibility": false,
+              "navigation": false,
+              "forms": false,
+              "responsive": false,
+              "performance": false,
+              "criticalFunctions": false
+            }
+          }
+        },
+        {
+          "id": "task-wp-core",
+          "name": "WordPress Core Upgrade",
+          "description": "Review WordPress core installation, apply latest security and maintenance release, and confirm database updates.",
+          "status": "Done",
+          "notes": "",
+          "isCustom": false,
+          "orderIndex": 9,
+          "meta": {
+            "wpVersion": "6.7.1"
+          }
+        },
+        {
+          "id": "task-wp-hide",
+          "name": "WP-Hide",
+          "description": "Configure and verify WP-Hide security settings to obscure core WordPress assets, login paths, and plugin footprints.",
+          "status": "Done",
+          "notes": "",
+          "isCustom": false,
+          "orderIndex": 10
+        }
+      ],
+      "wordpressUsers": [],
+      "executiveSummary": "This report summarizes the WordPress maintenance, upgrade, security configuration, email delivery, and quality assurance tasks recorded for webdesignshop.com as of 2026-10-28. All scheduled maintenance, upgrade, and verification items have been successfully executed.",
+      "finalSummary": "All 10 recorded maintenance tasks for this website are marked as completed, achieving a 100% completion rate. All core, plugin, theme, and security checks have been documented and fulfilled.",
+      "createdAt": "2026-10-28T16:22:01.700Z",
+      "updatedAt": "2026-10-28T16:22:01.700Z"
+    }
+  ]
+}
