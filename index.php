@@ -37,6 +37,8 @@ function saveReports($dbFile, $reports) {
 
 // Handle API requests
 if (isset($_GET['api'])) {
+    header('Cache-Control: no-store, no-cache, must-revalidate, max-age=0');
+    header('Pragma: no-cache');
     header('Content-Type: application/json; charset=utf-8');
     $action = $_GET['api'];
     $reports = getReports($dbFile);
@@ -178,6 +180,7 @@ if (isset($_GET['api'])) {
         // Generate Excel-compatible spreadsheet with UTF-8 BOM
         header('Content-Type: text/csv; charset=utf-8');
         header('Content-Disposition: attachment; filename="' . $filename . '"');
+        header('Cache-Control: no-store, no-cache, must-revalidate, max-age=0');
         header('Pragma: no-cache');
         header('Expires: 0');
 
