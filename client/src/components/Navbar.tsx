@@ -40,10 +40,10 @@ export const Navbar: React.FC<NavbarProps> = ({ currentTab, onNavigate }) => {
             </div>
             <div>
               <span className="font-extrabold text-lg tracking-tight text-slate-950 block leading-tight">
-                WebMaintenance<span className="text-slate-500">Pro</span>
+                wds-wp-report
               </span>
               <span className="text-xs text-slate-500 font-semibold tracking-wider uppercase">
-                Reporting & Excel Tracker
+                WordPress Upgrade & QA Reporter
               </span>
             </div>
           </div>

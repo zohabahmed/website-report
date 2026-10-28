@@ -1,4 +1,4 @@
-# Website Maintenance & Upgrade Reporting Tool
+# wds-wp-report
 
 A professional, modern, and responsive web application designed for digital agencies, sysadmins, and technical teams to track WordPress maintenance, upgrades, security configurations, and quality assurance (QA) tasks — generating elegant, factual client-facing reports with one click and logging all audits to a Master Excel spreadsheet for monthly retainer reviews.
 

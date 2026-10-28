@@ -1,7 +1,7 @@
 {
-  "name": "website-maintenance-reporter",
+  "name": "wds-wp-report",
   "version": "1.0.0",
-  "description": "Website Maintenance & Upgrade Reporting Tool - Enterprise Client Reports",
+  "description": "wds-wp-report - WordPress Maintenance & Upgrade Reporting Tool",
   "scripts": {
     "build:client": "npm --prefix client run build",
     "build:server": "npm --prefix server run build",

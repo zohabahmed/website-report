@@ -1,7 +1,7 @@
 <?php
 /**
  * ==============================================================================
- * Website Maintenance & Upgrade Reporting Tool - Single-File Cloudways Edition
+ * wds-wp-report - Single-File Cloudways Edition
  * ==============================================================================
  * How to deploy to Cloudways:
  * 1. Upload this file as `index.php` directly into your Cloudways `public_html/` folder.
@@ -270,7 +270,7 @@ if (isset($_GET['api'])) {
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Website Maintenance & Upgrade Reporting Tool</title>
+  <title>wds-wp-report</title>
   <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%232563EB'><path d='M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4z'/></svg>">
   
   <!-- Tailwind CSS CDN -->
@@ -305,7 +305,7 @@ if (isset($_GET['api'])) {
         </div>
         <div>
           <span class="font-extrabold text-base tracking-tight text-slate-950 block leading-tight">
-            WebMaintenance<span class="text-slate-500">Pro</span>
+            wds-wp-report
           </span>
           <span class="text-[10px] text-slate-500 font-semibold tracking-wider uppercase">
             WordPress Upgrade & QA Reporter
