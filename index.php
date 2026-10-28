@@ -88,14 +88,31 @@ if (isset($_GET['api'])) {
 
         // Auto-push to Google Apps Script Webhook
         if (!empty($googleWebhookUrl)) {
-            @file_get_contents($googleWebhookUrl, false, stream_context_create([
-                'http' => [
-                    'method' => 'POST',
-                    'header' => "Content-Type: application/json\r\n",
-                    'content' => json_encode($input),
-                    'timeout' => 3
-                ]
-            ]));
+            $payload = json_encode($input);
+            if (function_exists('curl_init')) {
+                $ch = curl_init($googleWebhookUrl);
+                curl_setopt_array($ch, [
+                    CURLOPT_POST => true,
+                    CURLOPT_POSTFIELDS => $payload,
+                    CURLOPT_HTTPHEADER => ['Content-Type: application/json'],
+                    CURLOPT_RETURNTRANSFER => true,
+                    CURLOPT_FOLLOWLOCATION => true,
+                    CURLOPT_TIMEOUT => 4,
+                    CURLOPT_SSL_VERIFYPEER => false,
+                ]);
+                @curl_exec($ch);
+                @curl_close($ch);
+            } else {
+                @file_get_contents($googleWebhookUrl, false, stream_context_create([
+                    'http' => [
+                        'method' => 'POST',
+                        'header' => "Content-Type: application/json\r\n",
+                        'content' => $payload,
+                        'timeout' => 4,
+                        'follow_location' => 1
+                    ]
+                ]));
+            }
         }
 
         echo json_encode(['report' => $input]);
