@@ -13,7 +13,7 @@
 // GOOGLE SHEETS & LIVE SYNC CONFIGURATION
 // -----------------------------------------------------------------------------
 $googleSheetUrl = 'https://docs.google.com/spreadsheets/d/14CCuvMZ0L-ue5nTuIfndTPMKo_0Tdn0Fa3PDlQyVLK0/edit?gid=0#gid=0';
-$googleWebhookUrl = 'https://script.google.com/macros/s/AKfycbyfapBf-C_esJGcFgYG_kyjre_Sf10UFdLwNZnt6I67ffbb0MzpQhC4h3P3VGfdR7bJ/exec';
+$googleWebhookUrl = 'https://script.google.com/macros/s/AKfycbzA8RxyLB0yMUWGjCjbAdK63CN3SNwuH8B-zWR2O6z9VKb2i3duAoNtRE4huVegV8Bu/exec';
 
 // -----------------------------------------------------------------------------
 // BACKEND API & DATA PERSISTENCE
