@@ -38,7 +38,7 @@ export function getDefaultTasks(): MaintenanceTask[] {
       isCustom: false,
       orderIndex: 4,
       meta: {
-        phpVersion: 'PHP 8.3',
+        phpVersion: '',
       },
     },
     {
@@ -50,7 +50,7 @@ export function getDefaultTasks(): MaintenanceTask[] {
       isCustom: false,
       orderIndex: 5,
       meta: {
-        wpVersion: '6.7.1',
+        wpVersion: '',
       },
     },
     {

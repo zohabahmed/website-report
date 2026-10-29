@@ -433,23 +433,25 @@ export const CreateReportPage: React.FC<CreateReportPageProps> = ({
                     {/* Controls & Done/Undone Toggle Button */}
                     <div className="flex items-center gap-2.5 flex-shrink-0">
                       {/* Optional Expand Notes Button */}
-                      <button
-                        type="button"
-                        onClick={() => toggleNotesExpanded(task.id)}
-                        className={`text-xs px-2.5 py-1 rounded-lg border transition-colors flex items-center gap-1 ${
-                          hasNotes
-                            ? 'bg-slate-800 text-blue-400 border-slate-700'
-                            : 'bg-transparent text-slate-500 border-transparent hover:border-slate-700 hover:text-slate-400'
-                        }`}
-                        title="Add/Edit Notes"
-                      >
-                        <span>{hasNotes ? 'Notes' : '+ Note'}</span>
-                        {isExpanded ? (
-                          <ChevronUp className="w-3.5 h-3.5" />
-                        ) : (
-                          <ChevronDown className="w-3.5 h-3.5" />
-                        )}
-                      </button>
+                      {task.id !== 'task-php-version' && task.id !== 'task-wp-core' && (
+                        <button
+                          type="button"
+                          onClick={() => toggleNotesExpanded(task.id)}
+                          className={`text-xs px-2.5 py-1 rounded-lg border transition-colors flex items-center gap-1 ${
+                            hasNotes
+                              ? 'bg-slate-800 text-blue-400 border-slate-700'
+                              : 'bg-transparent text-slate-500 border-transparent hover:border-slate-700 hover:text-slate-400'
+                          }`}
+                          title="Add/Edit Notes"
+                        >
+                          <span>{hasNotes ? 'Notes' : '+ Note'}</span>
+                          {isExpanded ? (
+                            <ChevronUp className="w-3.5 h-3.5" />
+                          ) : (
+                            <ChevronDown className="w-3.5 h-3.5" />
+                          )}
+                        </button>
+                      )}
 
                       {/* Remove Field Button */}
                       <button

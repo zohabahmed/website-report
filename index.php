@@ -524,6 +524,7 @@ if (isset($_GET['api'])) {
               <!-- Action Controls: Note + DONE / UNDONE Toggle + REMOVE -->
               <div class="flex items-center gap-2 flex-shrink-0">
                 <button
+                  v-if="task.id !== 'task-php-version' && task.id !== 'task-wp-core'"
                   type="button"
                   @click="expandedNotes[task.id] = !expandedNotes[task.id]"
                   :class="task.notes ? 'bg-slate-100 text-slate-900 border-slate-300 font-semibold' : 'bg-white text-slate-500 border-slate-200 hover:border-slate-400 hover:text-slate-900'"
@@ -992,8 +993,8 @@ createApp({
       { id: 'task-plugin-upgrade', name: 'Plugins Upgrade', status: 'Undone', notes: 'upgraded', meta: {} },
       { id: 'task-theme-upgrade', name: 'Themes Upgrade', status: 'Undone', notes: 'upgraded', meta: {} },
       { id: 'task-disable-file-edit', name: 'Disable File Edit', status: 'Undone', notes: 'enabled', meta: {} },
-      { id: 'task-php-version', name: 'PHP Version', status: 'Undone', notes: '', meta: { phpVersion: 'PHP 8.3' } },
-      { id: 'task-wp-core', name: 'WordPress Core Upgrade', status: 'Undone', notes: '', meta: { wpVersion: '6.7.1' } },
+      { id: 'task-php-version', name: 'PHP Version', status: 'Undone', notes: '', meta: { phpVersion: '' } },
+      { id: 'task-wp-core', name: 'WordPress Core Upgrade', status: 'Undone', notes: '', meta: { wpVersion: '' } },
       { id: 'task-2fa', name: 'Two-Factor Authentication (2FA)', status: 'Undone', notes: 'Reviewed', meta: {} },
       { id: 'task-user-accounts', name: 'User Accounts and Email Addresses', status: 'Undone', notes: 'Reviewed', meta: {} },
       { id: 'task-elastic-email', name: 'Elastic Email', status: 'Undone', notes: 'configured', meta: {} },
