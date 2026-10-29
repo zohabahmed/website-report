@@ -204,6 +204,12 @@ if (isset($_GET['api'])) {
         exit;
     }
 
+    if ($action === 'clear_all_reports') {
+        saveReports($dbFile, []);
+        echo json_encode(['success' => true, 'message' => 'All saved reports have been reset.']);
+        exit;
+    }
+
     if ($action === 'export_excel') {
         $singleId = isset($_GET['id']) ? trim($_GET['id']) : '';
         $exportReports = $reports;
