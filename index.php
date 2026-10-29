@@ -629,72 +629,72 @@ if (isset($_GET['api'])) {
       </div>
 
       <!-- Printable Report Document Sheet (Target container with id="report-document") -->
-      <div id="report-document" class="bg-white text-slate-900 rounded-2xl border border-slate-200 shadow-sm p-4 sm:p-8 md:p-10 space-y-4 sm:space-y-6 print:p-0 print:border-none print:shadow-none">
+      <div id="report-document" class="bg-white text-slate-900 rounded-2xl border border-slate-200 shadow-sm p-4 sm:p-6 md:p-8 space-y-3.5 print:p-0 print:border-none print:shadow-none">
         <!-- Header -->
-        <div class="bg-black text-white p-4 sm:p-6 rounded-xl flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-4">
+        <div class="bg-black text-white p-3.5 sm:p-4 rounded-xl flex flex-col sm:flex-row sm:items-center justify-between gap-3">
           <div>
-            <div class="text-slate-400 text-[10px] sm:text-xs font-bold uppercase tracking-wider mb-1">
+            <div class="text-slate-400 text-[10px] font-bold uppercase tracking-wider mb-0.5">
               Technical Audit & Status Log
             </div>
-            <h1 class="text-xl sm:text-2xl md:text-3xl font-extrabold tracking-tight">
+            <h1 class="text-lg sm:text-xl md:text-2xl font-extrabold tracking-tight">
               Website Maintenance & Upgrade Report
             </h1>
-            <p class="text-xs text-slate-300 mt-1 break-all">
+            <p class="text-xs text-slate-300 mt-0.5 break-all">
               Target Property: <span class="font-bold text-white">{{ currentReport.websiteUrl }}</span>
             </p>
           </div>
-          <div class="bg-slate-900 border border-slate-800 px-3.5 py-2 sm:px-4 sm:py-2.5 rounded-lg text-left sm:text-right flex-shrink-0 self-start sm:self-auto">
-            <span class="text-[10px] sm:text-[11px] uppercase tracking-wider text-slate-400 block font-semibold">Report Date</span>
-            <span class="text-sm sm:text-base font-bold text-white">{{ currentReport.reportDate }}</span>
+          <div class="bg-slate-900 border border-slate-800 px-3 py-1.5 sm:px-3.5 sm:py-2 rounded-lg text-left sm:text-right flex-shrink-0 self-start sm:self-auto">
+            <span class="text-[9px] uppercase tracking-wider text-slate-400 block font-bold">Report Date</span>
+            <span class="text-xs sm:text-sm font-bold text-white font-mono">{{ currentReport.reportDate }}</span>
           </div>
         </div>
 
         <!-- Metric Summary -->
-        <div class="grid grid-cols-2 sm:grid-cols-4 gap-2.5 sm:gap-4">
-          <div class="bg-slate-50 border border-slate-200 rounded-xl p-3 sm:p-3.5">
-            <span class="text-[10px] sm:text-[11px] font-semibold uppercase text-slate-500 block">Total Tasks</span>
-            <span class="text-xl sm:text-2xl font-extrabold text-slate-900 block mt-0.5">{{ currentReport.totalTasks }}</span>
+        <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 sm:gap-2.5">
+          <div class="bg-slate-50 border border-slate-200 rounded-xl p-2.5 sm:p-3">
+            <span class="text-[10px] font-semibold uppercase text-slate-500 block">Total Tasks</span>
+            <span class="text-lg sm:text-xl font-extrabold text-slate-900 block mt-0.5">{{ currentReport.totalTasks }}</span>
           </div>
-          <div class="bg-emerald-50 border border-emerald-200 rounded-xl p-3 sm:p-3.5">
-            <span class="text-[10px] sm:text-[11px] font-semibold uppercase text-emerald-800 block">Completed</span>
-            <span class="text-xl sm:text-2xl font-extrabold text-emerald-700 block mt-0.5">{{ currentReport.completedTasks }}</span>
+          <div class="bg-emerald-50/70 border border-emerald-200 rounded-xl p-2.5 sm:p-3">
+            <span class="text-[10px] font-semibold uppercase text-emerald-800 block">Completed</span>
+            <span class="text-lg sm:text-xl font-extrabold text-emerald-700 block mt-0.5">{{ currentReport.completedTasks }}</span>
           </div>
-          <div class="bg-rose-50 border border-rose-200 rounded-xl p-3 sm:p-3.5">
-            <span class="text-[10px] sm:text-[11px] font-semibold uppercase text-rose-800 block">Incomplete</span>
-            <span class="text-xl sm:text-2xl font-extrabold text-rose-700 block mt-0.5">{{ currentReport.incompleteTasks }}</span>
+          <div class="bg-rose-50/70 border border-rose-200 rounded-xl p-2.5 sm:p-3">
+            <span class="text-[10px] font-semibold uppercase text-rose-800 block">Incomplete</span>
+            <span class="text-lg sm:text-xl font-extrabold text-rose-700 block mt-0.5">{{ currentReport.incompleteTasks }}</span>
           </div>
-          <div class="bg-slate-100 border border-slate-300 rounded-xl p-3 sm:p-3.5">
-            <span class="text-[10px] sm:text-[11px] font-semibold uppercase text-slate-800 block">Readiness</span>
-            <span class="text-xl sm:text-2xl font-extrabold text-slate-900 block mt-0.5">{{ currentReport.completionPercentage }}%</span>
+          <div class="bg-slate-100/80 border border-slate-300 rounded-xl p-2.5 sm:p-3">
+            <span class="text-[10px] font-semibold uppercase text-slate-800 block">Readiness</span>
+            <span class="text-lg sm:text-xl font-extrabold text-slate-900 block mt-0.5">{{ currentReport.completionPercentage }}%</span>
           </div>
         </div>
 
         <!-- Executive Summary -->
-        <div class="space-y-2">
-          <h2 class="text-sm font-bold text-slate-900 uppercase tracking-wide">Executive Summary</h2>
-          <div class="bg-slate-50 border border-slate-200 rounded-xl p-4 text-xs sm:text-sm text-slate-700 leading-relaxed">
+        <div class="space-y-1.5">
+          <h2 class="text-xs font-bold text-slate-900 uppercase tracking-wide">Executive Summary</h2>
+          <div class="bg-slate-50 border border-slate-200 rounded-xl p-3 sm:p-3.5 text-xs text-slate-700 leading-relaxed">
             {{ currentReport.executiveSummary }}
           </div>
         </div>
 
         <!-- Detailed Checklist Table -->
-        <div class="space-y-2">
-          <h2 class="text-sm font-bold text-slate-900 uppercase tracking-wide">Detailed Maintenance Checklist</h2>
-          <div class="border border-slate-200 rounded-xl overflow-x-auto">
-            <table class="w-full min-w-[560px] text-left text-xs">
+        <div class="space-y-1.5">
+          <h2 class="text-xs font-bold text-slate-900 uppercase tracking-wide">Detailed Maintenance Checklist</h2>
+          <div class="border border-slate-200 rounded-xl overflow-hidden shadow-2xs">
+            <table class="w-full text-left text-xs">
               <thead class="bg-black text-white uppercase text-[10px] tracking-wider font-bold">
                 <tr>
-                  <th class="py-3 px-3 w-12 text-center">No.</th>
-                  <th class="py-3 px-4 w-56">Task Name</th>
-                  <th class="py-3 px-3 w-24 text-center">Status</th>
-                  <th class="py-3 px-4">Configuration / Notes / Version</th>
+                  <th class="py-2 px-3 w-12 text-center">No.</th>
+                  <th class="py-2 px-3.5 w-60">Task Name</th>
+                  <th class="py-2 px-3 w-24 text-center">Status</th>
+                  <th class="py-2 px-3.5">Configuration / Notes / Version</th>
                 </tr>
               </thead>
               <tbody class="divide-y divide-slate-200">
-                <tr v-for="(task, idx) in currentReport.tasks" :key="task.id" :class="idx % 2 === 0 ? 'bg-white' : 'bg-slate-50/50'">
-                  <td class="py-3 px-3 text-center text-slate-400 font-semibold">{{ idx + 1 }}</td>
-                  <td class="py-3 px-4 font-bold text-slate-800">{{ task.name }}</td>
-                  <td class="py-3 px-3 text-center">
+                <tr v-for="(task, idx) in currentReport.tasks" :key="task.id" :class="idx % 2 === 0 ? 'bg-white' : 'bg-slate-50/60'">
+                  <td class="py-2 px-3 text-center text-slate-400 font-semibold">{{ idx + 1 }}</td>
+                  <td class="py-2 px-3.5 font-bold text-slate-900">{{ task.name }}</td>
+                  <td class="py-2 px-3 text-center">
                     <span v-if="task.status === 'Done'" class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-emerald-100 text-emerald-800 border border-emerald-300">
                       ✓ Done
                     </span>
@@ -702,7 +702,7 @@ if (isset($_GET['api'])) {
                       ✕ Undone
                     </span>
                   </td>
-                  <td class="py-3 px-4 text-slate-700 leading-relaxed">
+                  <td class="py-2 px-3.5 text-slate-700 font-medium">
                     {{ formatTaskDetails(task) }}
                   </td>
                 </tr>
@@ -711,6 +711,11 @@ if (isset($_GET['api'])) {
           </div>
         </div>
 
+        <!-- Professional Audit Footer -->
+        <div class="pt-2 border-t border-slate-100 flex items-center justify-between text-[10px] text-slate-400">
+          <span>Website Maintenance & Security Technical Audit</span>
+          <span class="font-mono">Page 1 of 1</span>
+        </div>
       </div>
     </div>
 
@@ -1107,6 +1112,9 @@ createApp({
         clone.style.width = '800px';
         clone.style.maxWidth = '800px';
         clone.style.minWidth = '800px';
+        clone.style.padding = '18px 22px';
+        clone.style.border = 'none';
+        clone.style.boxShadow = 'none';
         clone.style.position = 'fixed';
         clone.style.left = '-9999px';
         clone.style.top = '0';
@@ -1135,23 +1143,31 @@ createApp({
         const margin = 8;
         const printWidth = pageWidth - (margin * 2);
         const printHeight = (canvas.height * printWidth) / canvas.width;
+        const maxPageHeight = pageHeight - (margin * 2);
 
-        if (printHeight <= (pageHeight - margin * 2)) {
-          // Fits cleanly on a single A4 page
+        // Smart fit: if content fits on 1 page or is within 1.35x page height (e.g. 14-22 tasks),
+        // scale proportionally so it stays on 1 SINGLE pristine executive page with ZERO row slicing!
+        if (printHeight <= maxPageHeight) {
           pdf.addImage(imgData, 'JPEG', margin, margin, printWidth, printHeight);
+        } else if (printHeight <= maxPageHeight * 1.35) {
+          const scale = maxPageHeight / printHeight;
+          const fittedWidth = printWidth * scale;
+          const fittedHeight = printHeight * scale;
+          const xOffset = margin + (printWidth - fittedWidth) / 2;
+          pdf.addImage(imgData, 'JPEG', xOffset, margin, fittedWidth, fittedHeight);
         } else {
-          // Multi-page slicing if tasks exceed 1 page
+          // If it genuinely requires multiple pages (>25 tasks):
           let heightLeft = printHeight;
           let position = margin;
 
           pdf.addImage(imgData, 'JPEG', margin, position, printWidth, printHeight);
-          heightLeft -= (pageHeight - margin * 2);
+          heightLeft -= maxPageHeight;
 
           while (heightLeft > 0) {
             position = margin - (printHeight - heightLeft);
             pdf.addPage();
             pdf.addImage(imgData, 'JPEG', margin, position, printWidth, printHeight);
-            heightLeft -= (pageHeight - margin * 2);
+            heightLeft -= maxPageHeight;
           }
         }
 
