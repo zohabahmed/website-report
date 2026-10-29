@@ -62,13 +62,13 @@ export async function createReportsWorkbook(reports: WebsiteReport[], filterMont
   };
 
   // ==============================================================
-  // SHEET 1: 9-TASK COMPLIANCE MATRIX (PRIMARY SHEET)
+  // SHEET 1: 14-TASK COMPLIANCE MATRIX (PRIMARY SHEET)
   // ==============================================================
-  const matrixSheet = workbook.addWorksheet('9-Task Compliance Matrix', {
+  const matrixSheet = workbook.addWorksheet('14-Task Compliance Matrix', {
     views: [{ showGridLines: true }],
   });
 
-  matrixSheet.mergeCells('A1:M1');
+  matrixSheet.mergeCells('A1:Q1');
   const mTitle = matrixSheet.getCell('A1');
   mTitle.value = 'WORDPRESS MAINTENANCE & SECURITY COMPLIANCE MATRIX';
   mTitle.font = { name: 'Calibri', size: 14, bold: true, color: { argb: 'FFFFFFFF' } };
@@ -79,16 +79,20 @@ export async function createReportsWorkbook(reports: WebsiteReport[], filterMont
   const matrixHeaders = [
     'No.',
     'Website URL',
-    '1. Plugin Upgrade',
-    '2. Theme Upgrade',
-    '3. WP-Config Code',
+    '1. Plugins Upgrade',
+    '2. Themes Upgrade',
+    '3. Disable File Edit',
     '4. PHP Version',
-    '5. 2FA Security',
-    '6. User Accounts',
-    '7. Elastic Email',
-    '8. Website QA',
-    '9. WordPress Core',
-    '10. WP-Hide',
+    '5. WordPress Core',
+    '6. 2FA Security',
+    '7. User Accounts',
+    '8. Elastic Email',
+    '9. WP-Hide',
+    '10. Session Logout',
+    '11. Elementor License',
+    '12. Honey Pot',
+    '13. Google reCAPTCHA',
+    '14. Website QA',
     'Overall %',
   ];
 
@@ -109,14 +113,18 @@ export async function createReportsWorkbook(reports: WebsiteReport[], filterMont
 
     const tPlugin = findTask('plugin');
     const tTheme = findTask('theme');
-    const tConfig = findTask('config');
+    const tConfig = findTask('file edit') || findTask('config');
     const tPhp = findTask('php');
+    const tCore = findTask('core');
     const t2fa = findTask('factor') || findTask('2fa');
     const tUsers = findTask('user');
     const tEmail = findTask('elastic') || findTask('email');
-    const tQa = findTask('qa') || findTask('quality');
-    const tCore = findTask('core');
     const tHide = findTask('hide');
+    const tLogout = findTask('logout') || findTask('session');
+    const tElementor = findTask('elementor');
+    const tHoney = findTask('honey');
+    const tRecaptcha = findTask('recaptcha');
+    const tQa = findTask('qa') || findTask('quality');
 
     const formatCell = (task?: any) => {
       if (!task) return 'N/A';
@@ -139,21 +147,25 @@ export async function createReportsWorkbook(reports: WebsiteReport[], filterMont
       formatCell(tTheme),
       formatCell(tConfig),
       formatCell(tPhp),
+      formatCell(tCore),
       formatCell(t2fa),
       formatCell(tUsers),
       formatCell(tEmail),
-      formatCell(tQa),
-      formatCell(tCore),
       formatCell(tHide),
+      formatCell(tLogout),
+      formatCell(tElementor),
+      formatCell(tHoney),
+      formatCell(tRecaptcha),
+      formatCell(tQa),
       `${r.completionPercentage}%`,
     ]);
     row.height = 22;
 
     row.getCell(1).alignment = { horizontal: 'center' };
-    row.getCell(13).alignment = { horizontal: 'center' };
+    row.getCell(17).alignment = { horizontal: 'center' };
 
-    // Format each task cell
-    for (let c = 3; c <= 12; c++) {
+    // Format each task cell (columns 3 through 16)
+    for (let c = 3; c <= 16; c++) {
       const cell = row.getCell(c);
       cell.alignment = { horizontal: 'center' };
       const val = String(cell.value || '');
@@ -167,7 +179,7 @@ export async function createReportsWorkbook(reports: WebsiteReport[], filterMont
     }
 
     // Format Overall %
-    const lastCell = row.getCell(13);
+    const lastCell = row.getCell(17);
     if (r.completionPercentage === 100) {
       lastCell.fill = doneFill;
       lastCell.font = doneFont;
@@ -184,10 +196,10 @@ export async function createReportsWorkbook(reports: WebsiteReport[], filterMont
   // Matrix widths
   matrixSheet.getColumn(1).width = 6;
   matrixSheet.getColumn(2).width = 32;
-  for (let col = 3; col <= 12; col++) {
+  for (let col = 3; col <= 16; col++) {
     matrixSheet.getColumn(col).width = 20;
   }
-  matrixSheet.getColumn(13).width = 14;
+  matrixSheet.getColumn(17).width = 14;
 
   // ==============================================================
   // SHEET 2: DETAILED REPORT LOG

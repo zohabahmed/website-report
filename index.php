@@ -242,16 +242,20 @@ if (isset($_GET['api'])) {
             'Completed Tasks',
             'Total Tasks',
             'Readiness %',
-            'Plugin Upgrade',
-            'Theme Upgrade',
-            'WP-Config Code',
+            'Plugins Upgrade',
+            'Themes Upgrade',
+            'Disable File Edit',
             'PHP Version',
+            'WordPress Core Upgrade',
             'Two-Factor Auth (2FA)',
             'User Accounts & Emails',
             'Elastic Email',
-            'Website QA',
-            'WordPress Core Upgrade',
             'WP-Hide',
+            'Inactivity Session Logout',
+            'Elementor License',
+            'Honey Pot',
+            'Google reCAPTCHA',
+            'Website QA',
             'Executive Summary',
             'Final Summary',
             'Last Updated'
@@ -292,14 +296,18 @@ if (isset($_GET['api'])) {
                 ($r['completionPercentage'] ?? 0) . '%',
                 $findTask('plugin'),
                 $findTask('theme'),
-                $findTask('config'),
+                $findTask('file edit') !== 'N/A' ? $findTask('file edit') : $findTask('config'),
                 $findTask('php'),
-                $findTask('2fa'),
+                $findTask('core'),
+                $findTask('2fa') !== 'N/A' ? $findTask('2fa') : $findTask('factor'),
                 $findTask('user'),
                 $findTask('elastic'),
-                $findTask('qa'),
-                $findTask('core'),
                 $findTask('hide'),
+                $findTask('logout') !== 'N/A' ? $findTask('logout') : $findTask('session'),
+                $findTask('elementor'),
+                $findTask('honey'),
+                $findTask('recaptcha'),
+                $findTask('qa'),
                 $r['executiveSummary'] ?? '',
                 $r['finalSummary'] ?? '',
                 $r['updatedAt'] ?? ''
@@ -451,7 +459,23 @@ if (isset($_GET['api'])) {
           <h2 class="text-xs font-bold uppercase tracking-wider text-slate-800">
             Maintenance Tasks (Mark Done or Undone)
           </h2>
-          <span class="text-xs text-slate-500 font-medium">One-click toggle</span>
+          <div class="flex items-center gap-2">
+            <button
+              type="button"
+              @click="markAllTasks('Done')"
+              class="text-xs text-slate-500 hover:text-black font-semibold underline cursor-pointer"
+            >
+              Mark All Done
+            </button>
+            <span class="text-slate-300">|</span>
+            <button
+              type="button"
+              @click="markAllTasks('Undone')"
+              class="text-xs text-slate-500 hover:text-black font-semibold underline cursor-pointer"
+            >
+              Mark All Undone
+            </button>
+          </div>
         </div>
 
         <div class="divide-y divide-slate-200">
@@ -963,22 +987,22 @@ createApp({
     const syncingAll = ref(false);
     const syncProgress = ref('');
 
-    // Standard Default Tasks with configured notes (Website QA moved to the last)
+    // Standard Default Tasks with configured notes (Website QA moved to the last, default Undone)
     const getDefaultTasks = () => [
-      { id: 'task-plugin-upgrade', name: 'Plugins Upgrade', status: 'Done', notes: 'upgraded', meta: {} },
-      { id: 'task-theme-upgrade', name: 'Themes Upgrade', status: 'Done', notes: 'upgraded', meta: {} },
-      { id: 'task-disable-file-edit', name: 'Disable File Edit', status: 'Done', notes: 'enabled', meta: {} },
-      { id: 'task-php-version', name: 'PHP Version', status: 'Done', notes: '', meta: { phpVersion: 'PHP 8.3' } },
-      { id: 'task-wp-core', name: 'WordPress Core Upgrade', status: 'Done', notes: '', meta: { wpVersion: '6.7.1' } },
-      { id: 'task-2fa', name: 'Two-Factor Authentication (2FA)', status: 'Done', notes: 'Reviewed', meta: {} },
-      { id: 'task-user-accounts', name: 'User Accounts and Email Addresses', status: 'Done', notes: 'Reviewed', meta: {} },
-      { id: 'task-elastic-email', name: 'Elastic Email', status: 'Done', notes: 'configured', meta: {} },
-      { id: 'task-wp-hide', name: 'WP-Hide', status: 'Done', notes: 'enabled', meta: {} },
-      { id: 'task-session-logout', name: 'Inactivity Session Logout', status: 'Done', notes: 'enabled', meta: {} },
-      { id: 'task-elementor-license', name: 'Elementor License', status: 'Done', notes: 'activated', meta: {} },
-      { id: 'task-honey-pot', name: 'Honey Pot', status: 'Done', notes: 'added', meta: {} },
-      { id: 'task-recaptcha', name: 'Google reCAPTCHA', status: 'Done', notes: 'added', meta: {} },
-      { id: 'task-qa', name: 'Website QA (Quality Assurance)', status: 'Done', notes: 'Tested & Verified', meta: {} },
+      { id: 'task-plugin-upgrade', name: 'Plugins Upgrade', status: 'Undone', notes: 'upgraded', meta: {} },
+      { id: 'task-theme-upgrade', name: 'Themes Upgrade', status: 'Undone', notes: 'upgraded', meta: {} },
+      { id: 'task-disable-file-edit', name: 'Disable File Edit', status: 'Undone', notes: 'enabled', meta: {} },
+      { id: 'task-php-version', name: 'PHP Version', status: 'Undone', notes: '', meta: { phpVersion: 'PHP 8.3' } },
+      { id: 'task-wp-core', name: 'WordPress Core Upgrade', status: 'Undone', notes: '', meta: { wpVersion: '6.7.1' } },
+      { id: 'task-2fa', name: 'Two-Factor Authentication (2FA)', status: 'Undone', notes: 'Reviewed', meta: {} },
+      { id: 'task-user-accounts', name: 'User Accounts and Email Addresses', status: 'Undone', notes: 'Reviewed', meta: {} },
+      { id: 'task-elastic-email', name: 'Elastic Email', status: 'Undone', notes: 'configured', meta: {} },
+      { id: 'task-wp-hide', name: 'WP-Hide', status: 'Undone', notes: 'enabled', meta: {} },
+      { id: 'task-session-logout', name: 'Inactivity Session Logout', status: 'Undone', notes: 'enabled', meta: {} },
+      { id: 'task-elementor-license', name: 'Elementor License', status: 'Undone', notes: 'activated', meta: {} },
+      { id: 'task-honey-pot', name: 'Honey Pot', status: 'Undone', notes: 'added', meta: {} },
+      { id: 'task-recaptcha', name: 'Google reCAPTCHA', status: 'Undone', notes: 'added', meta: {} },
+      { id: 'task-qa', name: 'Website QA (Quality Assurance)', status: 'Undone', notes: 'Tested & Verified', meta: {} },
     ];
 
     const tasks = ref(getDefaultTasks());
@@ -1006,13 +1030,19 @@ createApp({
       tasks.value = getDefaultTasks();
     };
 
+    const markAllTasks = (targetStatus) => {
+      tasks.value.forEach(t => {
+        t.status = targetStatus;
+      });
+    };
+
     const addCustomTask = () => {
       const name = prompt('Enter custom task name:');
       if (name && name.trim()) {
         tasks.value.push({
           id: 'custom-' + Math.random().toString(36).substring(2, 9),
           name: name.trim(),
-          status: 'Done',
+          status: 'Undone',
           notes: 'configured',
           meta: {}
         });
@@ -1307,6 +1337,7 @@ createApp({
       formatTaskDetails,
       removeTask,
       resetDefaultTasks,
+      markAllTasks,
       getDefaultTasks,
       addCustomTask,
       fetchReports,
