@@ -461,18 +461,20 @@ export const ReportPreviewView: React.FC<ReportPreviewViewProps> = ({
                           </span>
                         )}
                       </td>
-                      <td className="py-3 px-3 text-center">
-                        {isDone ? (
-                          <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-emerald-100 text-emerald-800 border border-emerald-300">
-                            <CheckCircle2 className="w-3 h-3" />
-                            Done
-                          </span>
-                        ) : (
-                          <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-rose-100 text-rose-800 border border-rose-300">
-                            <AlertTriangle className="w-3 h-3" />
-                            Undone
-                          </span>
-                        )}
+                      <td className="py-2.5 px-3 text-center align-middle">
+                        <div className="flex items-center justify-center">
+                          {isDone ? (
+                            <span className="inline-flex items-center justify-center gap-1 w-20 py-0.5 rounded-full text-[10px] font-bold bg-emerald-100 text-emerald-800 border border-emerald-300">
+                              <CheckCircle2 className="w-3 h-3" />
+                              Done
+                            </span>
+                          ) : (
+                            <span className="inline-flex items-center justify-center gap-1 w-20 py-0.5 rounded-full text-[10px] font-bold bg-rose-100 text-rose-800 border border-rose-300">
+                              <AlertTriangle className="w-3 h-3" />
+                              Undone
+                            </span>
+                          )}
+                        </div>
                       </td>
                       <td className="py-3 px-4 text-slate-700 leading-relaxed">
                         {details}

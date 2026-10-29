@@ -476,7 +476,7 @@ export const CreateReportPage: React.FC<CreateReportPageProps> = ({
                     <button
                       type="button"
                       onClick={() => toggleTaskStatus(task.id)}
-                      className={`px-2.5 py-1 rounded-lg text-[11px] font-bold transition-all flex items-center gap-1 shadow-2xs ${
+                      className={`w-20 py-1 rounded-lg text-[11px] font-bold transition-all flex items-center justify-center gap-1 shadow-2xs ${
                         isDone
                           ? 'bg-emerald-600 hover:bg-emerald-700 text-white'
                           : 'bg-rose-600 hover:bg-rose-700 text-white'

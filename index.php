@@ -529,7 +529,7 @@ if (isset($_GET['api'])) {
                 type="button"
                 @click="task.status = (task.status === 'Done' ? 'Undone' : 'Done')"
                 :class="task.status === 'Done' ? 'bg-emerald-600 hover:bg-emerald-700 text-white' : 'bg-rose-600 hover:bg-rose-700 text-white'"
-                class="px-2.5 py-1 rounded-lg text-[11px] font-bold transition-all flex items-center gap-1 cursor-pointer shadow-2xs"
+                class="w-20 py-1 rounded-lg text-[11px] font-bold transition-all flex items-center justify-center gap-1 cursor-pointer shadow-2xs"
               >
                 <span v-if="task.status === 'Done'">✓ Done</span>
                 <span v-else>✕ Undone</span>
@@ -684,25 +684,27 @@ if (isset($_GET['api'])) {
             <table class="w-full text-left text-xs">
               <thead class="bg-black text-white uppercase text-[10px] tracking-wider font-bold">
                 <tr>
-                  <th class="py-2 px-3 w-12 text-center">No.</th>
-                  <th class="py-2 px-3.5 w-60">Task Name</th>
-                  <th class="py-2 px-3 w-24 text-center">Status</th>
-                  <th class="py-2 px-3.5">Configuration / Notes / Version</th>
+                  <th class="py-2 px-3 w-12 text-center align-middle">No.</th>
+                  <th class="py-2 px-3.5 w-60 text-left align-middle">Task Name</th>
+                  <th class="py-2 px-3 w-28 text-center align-middle">Status</th>
+                  <th class="py-2 px-3.5 text-left align-middle">Configuration / Notes / Version</th>
                 </tr>
               </thead>
               <tbody class="divide-y divide-slate-200">
                 <tr v-for="(task, idx) in currentReport.tasks" :key="task.id" :class="idx % 2 === 0 ? 'bg-white' : 'bg-slate-50/60'">
-                  <td class="py-2 px-3 text-center text-slate-400 font-semibold">{{ idx + 1 }}</td>
-                  <td class="py-2 px-3.5 font-bold text-slate-900">{{ task.name }}</td>
-                  <td class="py-2 px-3 text-center">
-                    <span v-if="task.status === 'Done'" class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-emerald-100 text-emerald-800 border border-emerald-300">
-                      ✓ Done
-                    </span>
-                    <span v-else class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-rose-100 text-rose-800 border border-rose-300">
-                      ✕ Undone
-                    </span>
+                  <td class="py-2 px-3 text-center align-middle text-slate-400 font-semibold">{{ idx + 1 }}</td>
+                  <td class="py-2 px-3.5 align-middle font-bold text-slate-900">{{ task.name }}</td>
+                  <td class="py-2 px-3 text-center align-middle">
+                    <div class="flex items-center justify-center">
+                      <span v-if="task.status === 'Done'" class="inline-flex items-center justify-center gap-1 w-20 py-0.5 rounded-full text-[10px] font-bold bg-emerald-100 text-emerald-800 border border-emerald-300">
+                        ✓ Done
+                      </span>
+                      <span v-else class="inline-flex items-center justify-center gap-1 w-20 py-0.5 rounded-full text-[10px] font-bold bg-rose-100 text-rose-800 border border-rose-300">
+                        ✕ Undone
+                      </span>
+                    </div>
                   </td>
-                  <td class="py-2 px-3.5 text-slate-700 font-medium">
+                  <td class="py-2 px-3.5 align-middle text-slate-700 font-medium">
                     {{ formatTaskDetails(task) }}
                   </td>
                 </tr>
