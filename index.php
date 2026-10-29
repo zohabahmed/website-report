@@ -35,6 +35,57 @@ function saveReports($dbFile, $reports) {
     file_put_contents($dbFile, json_encode($reports, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES));
 }
 
+function pushToGoogleSheet($webhookUrl, $reportData) {
+    if (empty($webhookUrl)) {
+        return ['success' => false, 'error' => 'Webhook URL not configured'];
+    }
+    $payload = json_encode($reportData);
+    $result = null;
+    $httpCode = 0;
+
+    if (function_exists('curl_init')) {
+        $ch = curl_init($webhookUrl);
+        curl_setopt_array($ch, [
+            CURLOPT_POST => true,
+            CURLOPT_POSTFIELDS => $payload,
+            CURLOPT_HTTPHEADER => ['Content-Type: application/json'],
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_FOLLOWLOCATION => true,
+            CURLOPT_TIMEOUT => 6,
+            CURLOPT_SSL_VERIFYPEER => false,
+        ]);
+        $responseBody = curl_exec($ch);
+        $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+        curl_close($ch);
+
+        if ($responseBody) {
+            $decoded = json_decode($responseBody, true);
+            $result = $decoded ? $decoded : $responseBody;
+        }
+    } else {
+        $responseBody = @file_get_contents($webhookUrl, false, stream_context_create([
+            'http' => [
+                'method' => 'POST',
+                'header' => "Content-Type: application/json\r\n",
+                'content' => $payload,
+                'timeout' => 6,
+                'follow_location' => 1
+            ]
+        ]));
+        if ($responseBody) {
+            $decoded = json_decode($responseBody, true);
+            $result = $decoded ? $decoded : $responseBody;
+        }
+    }
+
+    $isOk = ($httpCode >= 200 && $httpCode < 400) || (!empty($result['status']) && $result['status'] === 'success');
+    return [
+        'success' => $isOk,
+        'httpCode' => $httpCode,
+        'result' => $result
+    ];
+}
+
 // Handle API requests
 if (isset($_GET['api'])) {
     header('Cache-Control: no-store, no-cache, must-revalidate, max-age=0');
@@ -88,36 +139,30 @@ if (isset($_GET['api'])) {
 
         saveReports($dbFile, $reports);
 
-        // Auto-push to Google Apps Script Webhook
-        if (!empty($googleWebhookUrl)) {
-            $payload = json_encode($input);
-            if (function_exists('curl_init')) {
-                $ch = curl_init($googleWebhookUrl);
-                curl_setopt_array($ch, [
-                    CURLOPT_POST => true,
-                    CURLOPT_POSTFIELDS => $payload,
-                    CURLOPT_HTTPHEADER => ['Content-Type: application/json'],
-                    CURLOPT_RETURNTRANSFER => true,
-                    CURLOPT_FOLLOWLOCATION => true,
-                    CURLOPT_TIMEOUT => 4,
-                    CURLOPT_SSL_VERIFYPEER => false,
-                ]);
-                @curl_exec($ch);
-                @curl_close($ch);
-            } else {
-                @file_get_contents($googleWebhookUrl, false, stream_context_create([
-                    'http' => [
-                        'method' => 'POST',
-                        'header' => "Content-Type: application/json\r\n",
-                        'content' => $payload,
-                        'timeout' => 4,
-                        'follow_location' => 1
-                    ]
-                ]));
-            }
+        // Push to Google Apps Script Webhook if option selected
+        $sheetSync = null;
+        if (!isset($input['saveToSheet']) || $input['saveToSheet'] === true) {
+            $sheetSync = pushToGoogleSheet($googleWebhookUrl, $input);
         }
 
-        echo json_encode(['report' => $input]);
+        echo json_encode(['report' => $input, 'sheetSync' => $sheetSync]);
+        exit;
+    }
+
+    if ($action === 'save_to_sheet' && $_SERVER['REQUEST_METHOD'] === 'POST') {
+        $input = json_decode(file_get_contents('php://input'), true);
+        if (!$input) {
+            http_response_code(400);
+            echo json_encode(['success' => false, 'error' => 'Invalid JSON']);
+            exit;
+        }
+
+        $sheetResp = pushToGoogleSheet($googleWebhookUrl, $input);
+        echo json_encode([
+            'success' => $sheetResp['success'],
+            'sheetResp' => $sheetResp,
+            'sheetUrl' => $googleSheetUrl
+        ]);
         exit;
     }
 
@@ -570,15 +615,44 @@ if (isset($_GET['api'])) {
         </div>
       </div>
 
-      <!-- 3. CREATE REPORT BUTTON AT BOTTOM (Section in image removed) -->
-      <div>
+      <!-- 3. CREATE REPORT BUTTON AT BOTTOM -->
+      <div class="space-y-3">
+        <!-- Save to Sheet Option Toggle -->
+        <div class="bg-white border border-slate-200 rounded-2xl p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3 shadow-xs">
+          <label class="flex items-center gap-3 cursor-pointer select-none">
+            <input
+              type="checkbox"
+              v-model="autoSaveToSheet"
+              class="w-5 h-5 rounded-lg text-emerald-600 focus:ring-emerald-500 border-slate-300 cursor-pointer accent-emerald-600"
+            />
+            <div>
+              <div class="text-sm font-bold text-slate-900 flex items-center gap-2">
+                <span>Save to Google Sheet</span>
+                <span class="text-[10px] bg-emerald-100 text-emerald-800 font-bold px-2 py-0.5 rounded-full uppercase">Live Sync</span>
+              </div>
+              <p class="text-xs text-slate-500">
+                Automatically logs this audit as a new row in your connected Google Sheet.
+              </p>
+            </div>
+          </label>
+          <a
+            :href="googleSheetUrl"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="text-xs font-bold text-emerald-700 hover:text-emerald-900 inline-flex items-center gap-1 self-start sm:self-auto bg-emerald-50 hover:bg-emerald-100 px-3 py-1.5 rounded-lg border border-emerald-200 transition-colors"
+          >
+            Open Sheet ↗
+          </a>
+        </div>
+
         <button
           type="button"
           @click="generateReport"
           class="w-full py-4 px-6 rounded-2xl bg-black hover:bg-slate-800 text-white font-extrabold text-base sm:text-lg shadow-lg shadow-black/10 transition-all hover:scale-[1.005] flex items-center justify-center gap-2 cursor-pointer"
         >
           <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
-          Create Website Maintenance Report
+          <span v-if="autoSaveToSheet">Create Report & Save to Sheet</span>
+          <span v-else>Create Website Maintenance Report</span>
         </button>
       </div>
     </div>
@@ -598,19 +672,39 @@ if (isset($_GET['api'])) {
           <button @click="activeTab = 'create'" class="px-3 py-1.5 rounded-lg border border-slate-300 bg-white hover:bg-slate-50 text-xs font-semibold text-slate-800">
             ← Edit Tasks
           </button>
+
+          <!-- Explicit Save to Sheet Button with loading & status -->
+          <button
+            @click="saveToGoogleSheet(currentReport)"
+            :disabled="sheetSyncing"
+            class="px-3.5 py-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-700 disabled:opacity-50 text-white text-xs font-bold shadow-xs inline-flex items-center gap-1.5 cursor-pointer transition-colors"
+            title="Push this report directly to your connected Google Sheet"
+          >
+            <svg v-if="sheetSyncing" class="w-3.5 h-3.5 animate-spin" viewBox="0 0 24 24" fill="none">
+              <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+              <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z"></path>
+            </svg>
+            <svg v-else class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zM9 17H7v-2h2v2zm0-4H7v-2h2v2zm0-4H7V7h2v2zm4 8h-2v-2h2v2zm0-4h-2v-2h2v2zm0-4h-2V7h2v2zm4 8h-2v-2h2v2zm0-4h-2v-2h2v2zm0-4h-2V7h2v2z"/>
+            </svg>
+            <span v-if="sheetSyncing">Saving to Sheet...</span>
+            <span v-else-if="currentReportSavedToSheet">✓ Saved to Sheet</span>
+            <span v-else>Save to Sheet</span>
+          </button>
+
           <button @click="downloadPdf" class="px-3.5 py-1.5 rounded-lg bg-black hover:bg-slate-800 text-white text-xs font-bold shadow-xs">
             Download PDF
           </button>
-          <a :href="'?api=export_excel&id=' + currentReport.id" class="px-3 py-1.5 rounded-lg bg-emerald-700 hover:bg-emerald-800 text-white text-xs font-bold shadow-xs">
-            Export Excel
+          <a :href="'?api=export_excel&id=' + currentReport.id" class="px-3 py-1.5 rounded-lg bg-slate-900 hover:bg-black text-white text-xs font-bold shadow-xs">
+            Export CSV
           </a>
           <a
-            href="https://docs.google.com/spreadsheets/d/14CCuvMZ0L-ue5nTuIfndTPMKo_0Tdn0Fa3PDlQyVLK0/edit?gid=0#gid=0"
+            :href="googleSheetUrl"
             target="_blank"
             rel="noopener noreferrer"
             class="px-3 py-1.5 rounded-lg border border-emerald-300 bg-emerald-50 hover:bg-emerald-100 text-emerald-800 text-xs font-bold shadow-xs inline-flex items-center gap-1"
           >
-            Google Sheet ↗
+            Open Sheet ↗
           </a>
           <button @click="window.print()" class="px-3 py-1.5 rounded-lg border border-slate-300 bg-white hover:bg-slate-50 text-xs font-semibold text-slate-800">
             Print
@@ -621,6 +715,20 @@ if (isset($_GET['api'])) {
           <button @click="startNewReport" class="px-3 py-1.5 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-800 text-xs font-semibold">
             + New
           </button>
+        </div>
+      </div>
+
+      <!-- Sheet Sync Success / Notification Banner -->
+      <div v-if="sheetSyncNotice" class="no-print bg-emerald-50 border border-emerald-200 text-emerald-900 rounded-xl p-3.5 flex items-center justify-between text-xs font-medium">
+        <div class="flex items-center gap-2">
+          <svg class="w-4 h-4 text-emerald-600 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/></svg>
+          <span>{{ sheetSyncNotice }}</span>
+        </div>
+        <div class="flex items-center gap-3">
+          <a :href="googleSheetUrl" target="_blank" rel="noopener noreferrer" class="font-bold underline text-emerald-800 hover:text-emerald-950">
+            View in Google Sheet ↗
+          </a>
+          <button @click="sheetSyncNotice = ''" class="text-emerald-600 hover:text-emerald-900 font-bold ml-2">✕</button>
         </div>
       </div>
 
@@ -728,6 +836,18 @@ if (isset($_GET['api'])) {
         </div>
 
         <div class="flex items-center gap-2">
+          <button
+            @click="syncAllToSheet"
+            :disabled="syncingAll || savedReports.length === 0"
+            title="Push all saved reports into your connected Google Sheet"
+            class="px-3.5 py-2 bg-emerald-600 hover:bg-emerald-700 disabled:opacity-50 text-white border border-emerald-500 rounded-xl text-xs font-bold shadow-xs transition-colors flex items-center gap-1.5 cursor-pointer"
+          >
+            <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zM9 17H7v-2h2v2zm0-4H7v-2h2v2zm0-4H7V7h2v2zm4 8h-2v-2h2v2zm0-4h-2v-2h2v2zm0-4h-2V7h2v2zm4 8h-2v-2h2v2zm0-4h-2v-2h2v2zm0-4h-2V7h2v2z"/>
+            </svg>
+            <span v-if="syncingAll">Syncing ({{ syncProgress }})...</span>
+            <span v-else>Sync All to Sheet</span>
+          </button>
           <button @click="copySheetFormula" title="Copy automatic sync formula for Google Sheets" class="px-3.5 py-2 bg-white hover:bg-slate-50 text-slate-800 border border-slate-300 rounded-xl text-xs font-semibold shadow-xs transition-colors flex items-center gap-1.5 cursor-pointer">
             📋 Copy Sync Formula
           </button>
@@ -782,6 +902,18 @@ if (isset($_GET['api'])) {
                 </td>
                 <td class="py-3.5 px-4 text-right">
                   <div class="inline-flex items-center gap-1.5">
+                    <button
+                      @click="saveToGoogleSheet(rep)"
+                      :disabled="sheetSyncingId === rep.id"
+                      title="Save this report to Google Sheet"
+                      class="px-2.5 py-1 bg-emerald-50 hover:bg-emerald-100 text-emerald-800 border border-emerald-300 font-bold rounded-lg text-[11px] inline-flex items-center gap-1 cursor-pointer transition-colors"
+                    >
+                      <svg class="w-3 h-3 text-emerald-700" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zM9 17H7v-2h2v2zm0-4H7v-2h2v2zm0-4H7V7h2v2zm4 8h-2v-2h2v2zm0-4h-2v-2h2v2zm0-4h-2V7h2v2zm4 8h-2v-2h2v2zm0-4h-2v-2h2v2zm0-4h-2V7h2v2z"/>
+                      </svg>
+                      <span v-if="sheetSyncingId === rep.id">Saving...</span>
+                      <span v-else>Save to Sheet</span>
+                    </button>
                     <button @click="viewReport(rep)" class="p-1.5 text-slate-600 hover:text-black font-semibold rounded">View</button>
                     <button @click="editReport(rep)" class="p-1.5 text-slate-600 hover:text-black font-semibold rounded">Edit</button>
                     <button @click="duplicateReport(rep.id)" class="p-1.5 text-slate-600 hover:text-black font-semibold rounded">Duplicate</button>
@@ -809,6 +941,14 @@ createApp({
     const expandedNotes = ref({});
     const savedReports = ref([]);
     const currentReport = ref(null);
+    const googleSheetUrl = 'https://docs.google.com/spreadsheets/d/14CCuvMZ0L-ue5nTuIfndTPMKo_0Tdn0Fa3PDlQyVLK0/edit?gid=0#gid=0';
+    const autoSaveToSheet = ref(true);
+    const sheetSyncing = ref(false);
+    const sheetSyncingId = ref(null);
+    const currentReportSavedToSheet = ref(false);
+    const sheetSyncNotice = ref('');
+    const syncingAll = ref(false);
+    const syncProgress = ref('');
 
     // Initial 10 Tasks without hardcoded default versions
     const tasks = ref([
@@ -909,22 +1049,88 @@ createApp({
       };
 
       currentReport.value = reportObj;
+      currentReportSavedToSheet.value = false;
+      sheetSyncNotice.value = '';
       activeTab.value = 'preview';
 
-      // Auto save to database & excel sync
+      // Auto save to database & Google Sheet if option selected
       try {
-        await fetch('?api=save_report', {
+        const payload = Object.assign({}, reportObj, { saveToSheet: autoSaveToSheet.value });
+        const res = await fetch('?api=save_report', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(reportObj)
+          body: JSON.stringify(payload)
         });
+        const savedData = await res.json();
+        if (autoSaveToSheet.value) {
+          currentReportSavedToSheet.value = true;
+          const rowInfo = savedData.sheetSync?.result?.row ? ` (Row #${savedData.sheetSync.result.row})` : '';
+          sheetSyncNotice.value = `✓ Report for ${cleanUrl} saved to Google Sheet${rowInfo}!`;
+        }
       } catch (err) {
         console.warn('Auto save error:', err);
       }
     };
 
+    const saveToGoogleSheet = async (report) => {
+      if (!report) return;
+      sheetSyncing.value = true;
+      sheetSyncingId.value = report.id;
+      sheetSyncNotice.value = '';
+      try {
+        const res = await fetch('?api=save_to_sheet', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(report)
+        });
+        const data = await res.json();
+        if (data.success) {
+          currentReportSavedToSheet.value = true;
+          const rowInfo = data.sheetResp?.result?.row ? ` (Row #${data.sheetResp.result.row})` : '';
+          sheetSyncNotice.value = `✓ Report for ${report.websiteUrl} successfully saved to Google Sheet${rowInfo}!`;
+        } else {
+          alert('Could not save to Google Sheet: ' + (data.sheetResp?.error || data.error || 'Check deployment'));
+        }
+      } catch (err) {
+        console.error('Save to sheet error:', err);
+        alert('Failed to connect to Google Sheet. Please check your internet connection.');
+      } finally {
+        sheetSyncing.value = false;
+        sheetSyncingId.value = null;
+      }
+    };
+
+    const syncAllToSheet = async () => {
+      if (savedReports.value.length === 0) {
+        alert('No saved reports to sync.');
+        return;
+      }
+      if (!confirm(`Sync all ${savedReports.value.length} saved reports to Google Sheet?`)) return;
+
+      syncingAll.value = true;
+      let count = 0;
+      for (const rep of savedReports.value) {
+        count++;
+        syncProgress.value = `${count}/${savedReports.value.length}`;
+        try {
+          await fetch('?api=save_to_sheet', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(rep)
+          });
+        } catch (e) {
+          console.warn('Sync failed for', rep.id, e);
+        }
+      }
+      syncingAll.value = false;
+      syncProgress.value = '';
+      alert(`Successfully synced ${count} reports to your Google Sheet!`);
+    };
+
     const startNewReport = () => {
       websiteUrl.value = '';
+      currentReportSavedToSheet.value = false;
+      sheetSyncNotice.value = '';
       tasks.value.forEach(t => {
         t.status = 'Undone';
         t.notes = '';
@@ -938,6 +1144,8 @@ createApp({
 
     const viewReport = (rep) => {
       currentReport.value = rep;
+      currentReportSavedToSheet.value = false;
+      sheetSyncNotice.value = '';
       activeTab.value = 'preview';
     };
 
@@ -1083,6 +1291,16 @@ createApp({
       expandedNotes,
       savedReports,
       currentReport,
+      googleSheetUrl,
+      autoSaveToSheet,
+      sheetSyncing,
+      sheetSyncingId,
+      currentReportSavedToSheet,
+      sheetSyncNotice,
+      syncingAll,
+      syncProgress,
+      saveToGoogleSheet,
+      syncAllToSheet,
       formatTaskDetails,
       addCustomTask,
       fetchReports,

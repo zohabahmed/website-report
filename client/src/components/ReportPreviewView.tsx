@@ -42,6 +42,27 @@ export const ReportPreviewView: React.FC<ReportPreviewViewProps> = ({
   const [downloadingExcel, setDownloadingExcel] = useState(false);
   const [saving, setSaving] = useState(false);
   const [copied, setCopied] = useState(false);
+  const [savingToSheet, setSavingToSheet] = useState(false);
+  const [sheetNotice, setSheetNotice] = useState<string | null>(null);
+
+  const handleSaveToSheet = async () => {
+    setSavingToSheet(true);
+    setSheetNotice(null);
+    try {
+      await fetch('https://script.google.com/macros/s/AKfycbzA8RxyLB0yMUWGjCjbAdK63CN3SNwuH8B-zWR2O6z9VKb2i3duAoNtRE4huVegV8Bu/exec', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(report),
+        mode: 'no-cors'
+      });
+      setSheetNotice('Audit successfully saved to connected Google Sheet!');
+      showToast('Saved to Google Sheet successfully!', 'success');
+    } catch (err: any) {
+      showToast('Could not push to Google Sheet: ' + err.message, 'error');
+    } finally {
+      setSavingToSheet(false);
+    }
+  };
 
   // Download Single Report Excel
   const handleDownloadExcel = async () => {
@@ -218,8 +239,20 @@ export const ReportPreviewView: React.FC<ReportPreviewViewProps> = ({
             {downloading ? 'Exporting PDF...' : 'Download PDF'}
           </button>
 
+          {/* Save to Google Sheet Button */}
+          <button
+            type="button"
+            onClick={handleSaveToSheet}
+            disabled={savingToSheet}
+            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-semibold shadow-xs transition-colors disabled:opacity-50 cursor-pointer"
+            title="Push this audit report directly to your connected Google Sheet"
+          >
+            <FileSpreadsheet className="w-3.5 h-3.5 text-white" />
+            <span>{savingToSheet ? 'Saving to Sheet...' : (sheetNotice ? '✓ Saved to Sheet' : 'Save to Sheet')}</span>
+          </button>
+
           {/* Open Google Sheet */}
-          <a href="https://docs.google.com/spreadsheets/d/14CCuvMZ0L-ue5nTuIfndTPMKo_0Tdn0Fa3PDlQyVLK0/edit?gid=0#gid=0" target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-emerald-300 bg-emerald-50 hover:bg-emerald-100 text-emerald-800 text-xs font-semibold shadow-xs transition-colors"><FileSpreadsheet className="w-3.5 h-3.5 text-emerald-700" /><span>Google Sheet ?</span></a>
+          <a href="https://docs.google.com/spreadsheets/d/14CCuvMZ0L-ue5nTuIfndTPMKo_0Tdn0Fa3PDlQyVLK0/edit?gid=0#gid=0" target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-emerald-300 bg-emerald-50 hover:bg-emerald-100 text-emerald-800 text-xs font-semibold shadow-xs transition-colors"><FileSpreadsheet className="w-3.5 h-3.5 text-emerald-700" /><span>Open Sheet ↗</span></a>
 
           {/* Download Excel */}
           <button
@@ -256,6 +289,22 @@ export const ReportPreviewView: React.FC<ReportPreviewViewProps> = ({
           </button>
         </div>
       </div>
+
+      {/* Google Sheet Sync Notification Banner */}
+      {sheetNotice && (
+        <div className="no-print bg-emerald-50 border border-emerald-200 text-emerald-900 rounded-xl p-3.5 flex items-center justify-between text-xs font-medium">
+          <div className="flex items-center gap-2">
+            <CheckCircle2 className="w-4 h-4 text-emerald-600 flex-shrink-0" />
+            <span>{sheetNotice}</span>
+          </div>
+          <div className="flex items-center gap-3">
+            <a href="https://docs.google.com/spreadsheets/d/14CCuvMZ0L-ue5nTuIfndTPMKo_0Tdn0Fa3PDlQyVLK0/edit?gid=0#gid=0" target="_blank" rel="noopener noreferrer" className="font-bold underline text-emerald-800 hover:text-emerald-950">
+              Open Google Sheet ↗
+            </a>
+            <button onClick={() => setSheetNotice(null)} className="text-emerald-600 hover:text-emerald-900 font-bold ml-2">✕</button>
+          </div>
+        </div>
+      )}
 
       {/* Complete Report Document Sheet */}
       <div className="bg-white rounded-2xl border border-slate-200 shadow-lg p-6 sm:p-10 max-w-5xl mx-auto space-y-8 print:p-0 print:border-none print:shadow-none">

@@ -47,6 +47,7 @@ export const CreateReportPage: React.FC<CreateReportPageProps> = ({
   // Loading & Saving
   const [loading, setLoading] = useState<boolean>(false);
   const [saving, setSaving] = useState<boolean>(false);
+  const [saveToSheet, setSaveToSheet] = useState<boolean>(true);
 
   // Custom Task Modal
   const [isCustomModalOpen, setIsCustomModalOpen] = useState(false);
@@ -663,8 +664,37 @@ export const CreateReportPage: React.FC<CreateReportPageProps> = ({
         )}
       </div>
 
-      {/* 3. AT THE END: CREATE REPORT BUTTON (Banner in image removed) */}
+      {/* 3. AT THE END: CREATE REPORT BUTTON */}
       <div className="space-y-3">
+        {/* Save to Sheet Option Card */}
+        <div className="bg-white border border-slate-200 rounded-2xl p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3 shadow-xs">
+          <label className="flex items-center gap-3 cursor-pointer select-none">
+            <input
+              type="checkbox"
+              checked={saveToSheet}
+              onChange={(e) => setSaveToSheet(e.target.checked)}
+              className="w-5 h-5 rounded-lg text-emerald-600 focus:ring-emerald-500 border-slate-300 cursor-pointer accent-emerald-600"
+            />
+            <div>
+              <div className="text-sm font-bold text-slate-900 flex items-center gap-2">
+                <span>Save to Google Sheet</span>
+                <span className="text-[10px] bg-emerald-100 text-emerald-800 font-bold px-2 py-0.5 rounded-full uppercase">Live Sync</span>
+              </div>
+              <p className="text-xs text-slate-500">
+                Automatically logs this audit as a new row in your connected Google Sheet.
+              </p>
+            </div>
+          </label>
+          <a
+            href="https://docs.google.com/spreadsheets/d/14CCuvMZ0L-ue5nTuIfndTPMKo_0Tdn0Fa3PDlQyVLK0/edit?gid=0#gid=0"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-xs font-bold text-emerald-700 hover:text-emerald-900 inline-flex items-center gap-1 self-start sm:self-auto bg-emerald-50 hover:bg-emerald-100 px-3 py-1.5 rounded-lg border border-emerald-200 transition-colors"
+          >
+            Open Sheet ↗
+          </a>
+        </div>
+
         <button
           type="button"
           onClick={handleCreateReport}
