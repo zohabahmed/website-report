@@ -450,8 +450,8 @@ if (isset($_GET['api'])) {
             :class="task.status === 'Done' ? 'bg-white hover:bg-slate-50/70' : 'bg-white hover:bg-slate-50/50'"
           >
             <div class="px-4 sm:px-6 py-3.5 sm:py-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-4">
-              <!-- Title & Index -->
-              <div class="flex-1 min-w-0 w-full sm:w-auto">
+              <!-- Standard Pre-defined Task Row -->
+              <div v-if="!task.isCustom" class="flex-1 min-w-0 w-full sm:w-auto">
                 <div class="flex items-start sm:items-center gap-2.5 sm:gap-3">
                   <span class="text-xs font-bold text-slate-400 w-5 flex-shrink-0 pt-0.5 sm:pt-0">{{ idx + 1 }}.</span>
                   <span class="text-sm sm:text-base font-semibold text-slate-900 break-words leading-snug">{{ task.name }}</span>
@@ -479,24 +479,36 @@ if (isset($_GET['api'])) {
                   <button v-if="task.meta.wpVersion" @click="task.meta.wpVersion = ''" class="text-[11px] text-slate-400 hover:text-rose-600 flex-shrink-0">Clear</button>
                 </div>
 
-                <!-- Notes summary if closed -->
-                <div v-if="task.notes && !expandedNotes[task.id]" class="text-xs text-slate-600 truncate mt-1 ml-0 sm:ml-7">
+                <!-- Notes summary text for standard tasks (clean static text, no buttons) -->
+                <div v-if="task.notes" class="text-xs text-slate-500 font-medium mt-1 ml-0 sm:ml-7">
                   {{ task.notes }}
                 </div>
               </div>
 
-              <!-- Action Controls: Note + DONE / UNDONE Toggle + REMOVE -->
-              <div class="flex items-center justify-end sm:justify-start gap-2 flex-shrink-0 self-end sm:self-center">
-                <button
-                  v-if="task.id !== 'task-php-version' && task.id !== 'task-wp-core'"
-                  type="button"
-                  @click="expandedNotes[task.id] = !expandedNotes[task.id]"
-                  :class="task.notes ? 'bg-slate-100 text-slate-900 border-slate-300 font-semibold' : 'bg-white text-slate-500 border-slate-200 hover:border-slate-400 hover:text-slate-900'"
-                  class="text-xs px-2.5 py-1.5 rounded-lg border transition-colors flex items-center gap-1 cursor-pointer"
-                >
-                  {{ task.notes ? task.notes : '+ Config' }}
-                </button>
+              <!-- Custom Task Row (Added directly next to last field, manual input) -->
+              <div v-else class="flex-1 min-w-0 w-full sm:w-auto space-y-2">
+                <div class="flex items-center gap-2.5 sm:gap-3">
+                  <span class="text-xs font-bold text-slate-400 w-5 flex-shrink-0">{{ idx + 1 }}.</span>
+                  <input
+                    type="text"
+                    v-model="task.name"
+                    placeholder="Enter custom task name..."
+                    class="text-sm font-semibold px-3 py-1.5 bg-slate-50 text-slate-900 border border-slate-300 rounded-lg outline-none focus:bg-white focus:border-black focus:ring-1 focus:ring-black w-full placeholder:font-normal placeholder:text-slate-400"
+                    autofocus
+                  />
+                </div>
+                <div class="ml-0 sm:ml-7">
+                  <input
+                    type="text"
+                    v-model="task.notes"
+                    placeholder="Configuration / Notes / Version (manual input)"
+                    class="text-xs px-3 py-1.5 bg-slate-50 text-slate-700 border border-slate-200 rounded-lg outline-none focus:bg-white focus:border-black focus:ring-1 focus:ring-black w-full placeholder:text-slate-400"
+                  />
+                </div>
+              </div>
 
+              <!-- Action Controls: ONLY DONE / UNDONE Toggle + REMOVE -->
+              <div class="flex items-center justify-end sm:justify-start gap-2 flex-shrink-0 self-end sm:self-center">
                 <button
                   type="button"
                   @click="task.status = (task.status === 'Done' ? 'Undone' : 'Done')"
@@ -510,97 +522,17 @@ if (isset($_GET['api'])) {
                 <button
                   type="button"
                   @click="removeTask(task.id)"
-                  title="Remove this task/field"
+                  title="Remove this field"
                   class="p-1.5 text-slate-400 hover:text-rose-600 hover:bg-rose-50 rounded-lg transition-colors cursor-pointer"
                 >
                   <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
                 </button>
               </div>
             </div>
-
-            <!-- Expandable Note Drawer -->
-            <div v-if="expandedNotes[task.id]" class="px-6 pb-4 pt-2 bg-slate-50 border-t border-slate-200 space-y-2">
-              <input
-                type="text"
-                v-model="task.notes"
-                :placeholder="'Add specific observations or notes for ' + task.name + '...'"
-                class="w-full text-xs px-3 py-2 bg-white text-slate-900 border border-slate-300 rounded-lg outline-none focus:border-black"
-              />
-              
-              <!-- Quick tags for WP-Config -->
-              <div v-if="task.id === 'task-wp-config'" class="flex flex-wrap items-center gap-1.5 pt-1 text-xs text-slate-600">
-                <span>Quick Tags:</span>
-                <button
-                  v-for="tag in ['DISALLOW_FILE_EDIT enabled', 'WP_DEBUG disabled', 'Security Keys Rotated', 'Table Prefix Secured']"
-                  :key="tag"
-                  type="button"
-                  @click="task.notes = task.notes ? (task.notes + ', ' + tag) : tag"
-                  class="px-2.5 py-1 rounded bg-white text-slate-700 hover:text-black hover:bg-slate-100 border border-slate-300 text-[11px]"
-                >
-                  + {{ tag }}
-                </button>
-              </div>
-
-              <!-- Quick tags for User Accounts -->
-              <div v-if="task.id === 'task-user-accounts'" class="flex flex-wrap items-center gap-1.5 pt-1 text-xs text-slate-600">
-                <span>Quick Tags:</span>
-                <button
-                  v-for="tag in ['Admin 2FA Enforced', 'Inactive Users Cleared', 'Roles Audited', 'No Default Admin Username']"
-                  :key="tag"
-                  type="button"
-                  @click="task.notes = task.notes ? (task.notes + ', ' + tag) : tag"
-                  class="px-2.5 py-1 rounded bg-white text-slate-700 hover:text-black hover:bg-slate-100 border border-slate-300 text-[11px]"
-                >
-                  + {{ tag }}
-                </button>
-              </div>
-
-              <!-- Quick tags for Elastic Email -->
-              <div v-if="task.id === 'task-elastic-email'" class="flex flex-wrap items-center gap-1.5 pt-1 text-xs text-slate-600">
-                <span>Quick Tags:</span>
-                <button
-                  v-for="tag in ['SMTP Handshake Verified', 'SPF & DKIM Validated', 'Test Email Delivered 100%', 'TLS 1.3 Active']"
-                  :key="tag"
-                  type="button"
-                  @click="task.notes = task.notes ? (task.notes + ', ' + tag) : tag"
-                  class="px-2.5 py-1 rounded bg-white text-slate-700 hover:text-black hover:bg-slate-100 border border-slate-300 text-[11px]"
-                >
-                  + {{ tag }}
-                </button>
-              </div>
-
-              <!-- Quick tags for QA -->
-              <div v-if="task.id === 'task-qa'" class="flex flex-wrap items-center gap-1.5 pt-1 text-xs text-slate-600">
-                <span>Quick Tags:</span>
-                <button
-                  v-for="tag in ['Forms & Submissions Tested', 'Mobile Responsive OK', 'SSL / HTTPS Validated', 'Console Errors: 0', 'Checkout Verified']"
-                  :key="tag"
-                  type="button"
-                  @click="task.notes = task.notes ? (task.notes + ', ' + tag) : tag"
-                  class="px-2.5 py-1 rounded bg-white text-slate-700 hover:text-black hover:bg-slate-100 border border-slate-300 text-[11px]"
-                >
-                  + {{ tag }}
-                </button>
-              </div>
-
-              <!-- Quick tags for WP-Hide -->
-              <div v-if="task.id === 'task-wp-hide'" class="flex flex-wrap items-center gap-1.5 pt-1 text-xs text-slate-600">
-                <span>Quick Tags:</span>
-                <button
-                  v-for="tag in ['Login URL Obfuscated', 'wp-content/plugins Masked', 'XML-RPC Blocked', 'Core Footprints Hidden']"
-                  :key="tag"
-                  type="button"
-                  @click="task.notes = task.notes ? (task.notes + ', ' + tag) : tag"
-                  class="px-2.5 py-1 rounded bg-white text-slate-700 hover:text-black hover:bg-slate-100 border border-slate-300 text-[11px]"
-                >
-                  + {{ tag }}
-                </button>
-              </div>
-            </div>
           </div>
         </div>
 
-        <div class="px-6 py-4 border-t border-slate-100 bg-white flex items-center justify-between">
+        <div class="px-4 sm:px-6 py-3.5 sm:py-4 border-t border-slate-100 bg-white flex flex-wrap items-center justify-between gap-3">
           <div class="flex items-center gap-2">
             <button
               type="button"
@@ -608,52 +540,22 @@ if (isset($_GET['api'])) {
               class="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl border border-slate-200 bg-white hover:bg-slate-50 text-slate-800 hover:text-black text-xs font-semibold shadow-xs transition-all cursor-pointer"
             >
               <svg class="w-3.5 h-3.5 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
-              Add Custom Task
-            </button>
-            <button
-              type="button"
-              @click="resetDefaultTasks"
-              class="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl border border-slate-200 bg-white hover:bg-slate-50 text-slate-600 hover:text-slate-900 text-xs font-semibold shadow-xs transition-all cursor-pointer"
-              title="Restore all default maintenance tasks"
-            >
-              <svg class="w-3.5 h-3.5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
-              Restore Defaults
+              Add Custom Field
             </button>
           </div>
           <span class="text-xs text-slate-400 font-medium">{{ tasks.length }} Tasks Active</span>
         </div>
       </div>
 
-      <!-- 3. CREATE REPORT BUTTON AT BOTTOM -->
+      <!-- 3. CREATE REPORT BUTTON AT BOTTOM (Auto-syncs to Google Sheet by default) -->
       <div class="space-y-3">
-        <!-- Save to Sheet Option Toggle -->
-        <div class="bg-white border border-slate-200 rounded-2xl p-4 flex items-center justify-between gap-3 shadow-xs">
-          <label class="flex items-center gap-3 cursor-pointer select-none">
-            <input
-              type="checkbox"
-              v-model="autoSaveToSheet"
-              class="w-5 h-5 rounded-lg text-emerald-600 focus:ring-emerald-500 border-slate-300 cursor-pointer accent-emerald-600"
-            />
-            <div>
-              <div class="text-sm font-bold text-slate-900 flex items-center gap-2">
-                <span>Save to Google Sheet</span>
-                <span class="text-[10px] bg-emerald-100 text-emerald-800 font-bold px-2 py-0.5 rounded-full uppercase">Live Sync</span>
-              </div>
-              <p class="text-xs text-slate-500">
-                Automatically logs this audit as a new row in your connected Google Sheet.
-              </p>
-            </div>
-          </label>
-        </div>
-
         <button
           type="button"
           @click="generateReport"
           class="w-full py-4 px-6 rounded-2xl bg-black hover:bg-slate-800 text-white font-extrabold text-base sm:text-lg shadow-lg shadow-black/10 transition-all hover:scale-[1.005] flex items-center justify-center gap-2 cursor-pointer"
         >
           <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
-          <span v-if="autoSaveToSheet">Create Report & Save to Sheet</span>
-          <span v-else>Create Website Maintenance Report</span>
+          <span>Create Website Maintenance Report</span>
         </button>
       </div>
     </div>
@@ -981,16 +883,14 @@ createApp({
     };
 
     const addCustomTask = () => {
-      const name = prompt('Enter custom task name:');
-      if (name && name.trim()) {
-        tasks.value.push({
-          id: 'custom-' + Math.random().toString(36).substring(2, 9),
-          name: name.trim(),
-          status: 'Undone',
-          notes: 'configured',
-          meta: {}
-        });
-      }
+      tasks.value.push({
+        id: 'custom-' + Math.random().toString(36).substring(2, 9),
+        name: '',
+        status: 'Undone',
+        notes: '',
+        isCustom: true,
+        meta: {}
+      });
     };
 
     const fetchReports = async () => {
@@ -1054,20 +954,18 @@ createApp({
       sheetSyncNotice.value = '';
       activeTab.value = 'preview';
 
-      // Auto save to database & Google Sheet if option selected
+      // Auto save to database & Google Sheet (default sync to sheet)
       try {
-        const payload = Object.assign({}, reportObj, { saveToSheet: autoSaveToSheet.value });
+        const payload = Object.assign({}, reportObj, { saveToSheet: true });
         const res = await fetch('?api=save_report', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(payload)
         });
         const savedData = await res.json();
-        if (autoSaveToSheet.value) {
-          currentReportSavedToSheet.value = true;
-          const rowInfo = savedData.sheetSync?.result?.row ? ` (Row #${savedData.sheetSync.result.row})` : '';
-          sheetSyncNotice.value = `✓ Report for ${cleanUrl} saved to Google Sheet${rowInfo}!`;
-        }
+        currentReportSavedToSheet.value = true;
+        const rowInfo = savedData.sheetSync?.result?.row ? ` (Row #${savedData.sheetSync.result.row})` : '';
+        sheetSyncNotice.value = `✓ Report for ${cleanUrl} saved to Google Sheet${rowInfo}!`;
       } catch (err) {
         console.warn('Auto save error:', err);
       }
