@@ -93,6 +93,12 @@ export const CreateReportPage: React.FC<CreateReportPageProps> = ({
     return true;
   };
 
+  // Remove Task
+  const removeTask = (id: string) => {
+    setTasks((prev) => prev.filter((t) => t.id !== id));
+    showToast('Field removed from checklist.', 'info');
+  };
+
   // Toggle Task Status (Done <-> Undone)
   const toggleTaskStatus = (id: string) => {
     setTasks((prev) =>
@@ -445,17 +451,15 @@ export const CreateReportPage: React.FC<CreateReportPageProps> = ({
                         )}
                       </button>
 
-                      {/* Custom task delete */}
-                      {task.isCustom && (
-                        <button
-                          type="button"
-                          onClick={() => setDeleteTaskId(task.id)}
-                          className="p-1.5 text-slate-500 hover:text-rose-400 rounded transition-colors"
-                          title="Delete Custom Task"
-                        >
-                          <Trash2 className="w-4 h-4" />
-                        </button>
-                      )}
+                      {/* Remove Field Button */}
+                      <button
+                        type="button"
+                        onClick={() => removeTask(task.id)}
+                        className="p-1.5 text-slate-400 hover:text-rose-600 hover:bg-rose-50 rounded-lg transition-colors cursor-pointer"
+                        title="Remove this field from audit"
+                      >
+                        <Trash2 className="w-4 h-4" />
+                      </button>
 
                       {/* Explicit DONE / UNDONE Toggle Button */}
                       <button

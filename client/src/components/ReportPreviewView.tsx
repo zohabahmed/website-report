@@ -445,7 +445,7 @@ export const ReportPreviewView: React.FC<ReportPreviewViewProps> = ({
                   <th className="py-3 px-3 w-12 text-center">No.</th>
                   <th className="py-3 px-4 w-52">Task Name</th>
                   <th className="py-3 px-3 w-28 text-center">Status</th>
-                  <th className="py-3 px-4">Details / Notes</th>
+                  <th className="py-3 px-4">Configuration / Notes / Version</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-200">
@@ -556,23 +556,6 @@ export const ReportPreviewView: React.FC<ReportPreviewViewProps> = ({
             </div>
           </div>
         )}
-
-        {/* F. Final Summary */}
-        <div className="space-y-2.5">
-          <h2 className="text-base font-bold text-slate-900 tracking-tight flex items-center gap-2">
-            <span className="w-2 h-2 rounded-full bg-blue-600"></span>
-            Final Audit Summary & Security Advisory
-          </h2>
-          <div
-            className={`rounded-xl p-4 text-sm leading-relaxed border ${
-              report.incompleteTasks > 0
-                ? 'bg-amber-50/80 border-amber-300 text-amber-900'
-                : 'bg-emerald-50/80 border-emerald-300 text-emerald-900'
-            }`}
-          >
-            {report.finalSummary}
-          </div>
-        </div>
 
         {/* Report Footer */}
         <div className="pt-6 border-t border-slate-200 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-slate-500">

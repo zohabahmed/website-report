@@ -497,25 +497,34 @@ if (isset($_GET['api'])) {
                 </div>
               </div>
 
-              <!-- Action Controls: Note + DONE / UNDONE Toggle -->
-              <div class="flex items-center gap-2.5 flex-shrink-0">
+              <!-- Action Controls: Note + DONE / UNDONE Toggle + REMOVE -->
+              <div class="flex items-center gap-2 flex-shrink-0">
                 <button
                   type="button"
                   @click="expandedNotes[task.id] = !expandedNotes[task.id]"
                   :class="task.notes ? 'bg-slate-100 text-slate-900 border-slate-300 font-semibold' : 'bg-white text-slate-500 border-slate-200 hover:border-slate-400 hover:text-slate-900'"
-                  class="text-xs px-2.5 py-1 rounded-lg border transition-colors flex items-center gap-1"
+                  class="text-xs px-2.5 py-1.5 rounded-lg border transition-colors flex items-center gap-1 cursor-pointer"
                 >
-                  {{ task.notes ? 'Notes' : '+ Note' }}
+                  {{ task.notes ? task.notes : '+ Config' }}
                 </button>
 
                 <button
                   type="button"
                   @click="task.status = (task.status === 'Done' ? 'Undone' : 'Done')"
                   :class="task.status === 'Done' ? 'bg-emerald-600 hover:bg-emerald-700 text-white border-emerald-600 shadow-xs' : 'bg-rose-600 hover:bg-rose-700 text-white border-rose-600 shadow-xs'"
-                  class="px-4 py-2 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 border cursor-pointer"
+                  class="px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 border cursor-pointer"
                 >
                   <span v-if="task.status === 'Done'">✓ Done</span>
                   <span v-else>✕ Undone</span>
+                </button>
+
+                <button
+                  type="button"
+                  @click="removeTask(task.id)"
+                  title="Remove this task/field"
+                  class="p-1.5 text-slate-400 hover:text-rose-600 hover:bg-rose-50 rounded-lg transition-colors cursor-pointer"
+                >
+                  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
                 </button>
               </div>
             </div>
@@ -603,15 +612,26 @@ if (isset($_GET['api'])) {
         </div>
 
         <div class="px-6 py-4 border-t border-slate-100 bg-white flex items-center justify-between">
-          <button
-            type="button"
-            @click="addCustomTask"
-            class="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl border border-slate-200 bg-white hover:bg-slate-50 text-slate-800 hover:text-black text-xs font-semibold shadow-xs transition-all cursor-pointer"
-          >
-            <svg class="w-3.5 h-3.5 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
-            Add Custom Task
-          </button>
-          <span class="text-xs text-slate-400 font-medium">10 Standard Tasks Active</span>
+          <div class="flex items-center gap-2">
+            <button
+              type="button"
+              @click="addCustomTask"
+              class="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl border border-slate-200 bg-white hover:bg-slate-50 text-slate-800 hover:text-black text-xs font-semibold shadow-xs transition-all cursor-pointer"
+            >
+              <svg class="w-3.5 h-3.5 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
+              Add Custom Task
+            </button>
+            <button
+              type="button"
+              @click="resetDefaultTasks"
+              class="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl border border-slate-200 bg-white hover:bg-slate-50 text-slate-600 hover:text-slate-900 text-xs font-semibold shadow-xs transition-all cursor-pointer"
+              title="Restore all default maintenance tasks"
+            >
+              <svg class="w-3.5 h-3.5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
+              Restore Defaults
+            </button>
+          </div>
+          <span class="text-xs text-slate-400 font-medium">{{ tasks.length }} Tasks Active</span>
         </div>
       </div>
 
@@ -791,7 +811,7 @@ if (isset($_GET['api'])) {
                   <th class="py-3 px-3 w-12 text-center">No.</th>
                   <th class="py-3 px-4 w-56">Task Name</th>
                   <th class="py-3 px-3 w-24 text-center">Status</th>
-                  <th class="py-3 px-4">Details / Notes</th>
+                  <th class="py-3 px-4">Configuration / Notes / Version</th>
                 </tr>
               </thead>
               <tbody class="divide-y divide-slate-200">
@@ -815,13 +835,6 @@ if (isset($_GET['api'])) {
           </div>
         </div>
 
-        <!-- Final Summary -->
-        <div class="space-y-2">
-          <h2 class="text-sm font-bold text-slate-900 uppercase tracking-wide">Final Audit Status</h2>
-          <div :class="currentReport.incompleteTasks > 0 ? 'bg-amber-50 border-amber-300 text-amber-900' : 'bg-emerald-50 border-emerald-300 text-emerald-900'" class="rounded-xl p-4 text-xs sm:text-sm border leading-relaxed">
-            {{ currentReport.finalSummary }}
-          </div>
-        </div>
       </div>
     </div>
 
@@ -950,19 +963,25 @@ createApp({
     const syncingAll = ref(false);
     const syncProgress = ref('');
 
-    // Initial 10 Tasks without hardcoded default versions
-    const tasks = ref([
-      { id: 'task-plugin-upgrade', name: 'Plugin Upgrade', status: 'Undone', notes: '', meta: {} },
-      { id: 'task-theme-upgrade', name: 'Theme Upgrade', status: 'Undone', notes: '', meta: {} },
-      { id: 'task-wp-config', name: 'WP-Config Code', status: 'Undone', notes: '', meta: {} },
-      { id: 'task-php-version', name: 'PHP Version', status: 'Undone', notes: '', meta: { phpVersion: '' } },
-      { id: 'task-2fa', name: 'Two-Factor Authentication (2FA)', status: 'Undone', notes: '', meta: {} },
-      { id: 'task-user-accounts', name: 'User Accounts and Email Addresses', status: 'Undone', notes: '', meta: {} },
-      { id: 'task-elastic-email', name: 'Elastic Email', status: 'Undone', notes: '', meta: {} },
-      { id: 'task-qa', name: 'Website QA (Quality Assurance)', status: 'Undone', notes: '', meta: {} },
-      { id: 'task-wp-core', name: 'WordPress Core Upgrade', status: 'Undone', notes: '', meta: { wpVersion: '' } },
-      { id: 'task-wp-hide', name: 'WP-Hide', status: 'Undone', notes: '', meta: {} }
-    ]);
+    // Standard Default Tasks with configured notes (Website QA moved to the last)
+    const getDefaultTasks = () => [
+      { id: 'task-plugin-upgrade', name: 'Plugins Upgrade', status: 'Done', notes: 'upgraded', meta: {} },
+      { id: 'task-theme-upgrade', name: 'Themes Upgrade', status: 'Done', notes: 'upgraded', meta: {} },
+      { id: 'task-disable-file-edit', name: 'Disable File Edit', status: 'Done', notes: 'enabled', meta: {} },
+      { id: 'task-php-version', name: 'PHP Version', status: 'Done', notes: '', meta: { phpVersion: 'PHP 8.3' } },
+      { id: 'task-wp-core', name: 'WordPress Core Upgrade', status: 'Done', notes: '', meta: { wpVersion: '6.7.1' } },
+      { id: 'task-2fa', name: 'Two-Factor Authentication (2FA)', status: 'Done', notes: 'Reviewed', meta: {} },
+      { id: 'task-user-accounts', name: 'User Accounts and Email Addresses', status: 'Done', notes: 'Reviewed', meta: {} },
+      { id: 'task-elastic-email', name: 'Elastic Email', status: 'Done', notes: 'configured', meta: {} },
+      { id: 'task-wp-hide', name: 'WP-Hide', status: 'Done', notes: 'enabled', meta: {} },
+      { id: 'task-session-logout', name: 'Inactivity Session Logout', status: 'Done', notes: 'enabled', meta: {} },
+      { id: 'task-elementor-license', name: 'Elementor License', status: 'Done', notes: 'activated', meta: {} },
+      { id: 'task-honey-pot', name: 'Honey Pot', status: 'Done', notes: 'added', meta: {} },
+      { id: 'task-recaptcha', name: 'Google reCAPTCHA', status: 'Done', notes: 'added', meta: {} },
+      { id: 'task-qa', name: 'Website QA (Quality Assurance)', status: 'Done', notes: 'Tested & Verified', meta: {} },
+    ];
+
+    const tasks = ref(getDefaultTasks());
 
     const completedCount = computed(() => tasks.value.filter(t => t.status === 'Done').length);
     const percentage = computed(() => {
@@ -972,11 +991,19 @@ createApp({
 
     const formatTaskDetails = (task) => {
       const parts = [];
-      if (task.meta?.phpVersion?.trim()) parts.push('PHP Runtime: ' + task.meta.phpVersion.trim());
-      if (task.meta?.wpVersion?.trim()) parts.push('WordPress Version: ' + task.meta.wpVersion.trim());
-      if (task.meta?.configChanges?.trim()) parts.push('Config: ' + task.meta.configChanges.trim());
+      if (task.meta?.phpVersion?.trim()) parts.push(task.meta.phpVersion.trim());
+      if (task.meta?.wpVersion?.trim()) parts.push('v' + task.meta.wpVersion.trim().replace(/^v/i, ''));
+      if (task.meta?.configChanges?.trim()) parts.push(task.meta.configChanges.trim());
       if (task.notes?.trim()) parts.push(task.notes.trim());
       return parts.length > 0 ? parts.join(' — ') : '-';
+    };
+
+    const removeTask = (id) => {
+      tasks.value = tasks.value.filter(t => t.id !== id);
+    };
+
+    const resetDefaultTasks = () => {
+      tasks.value = getDefaultTasks();
     };
 
     const addCustomTask = () => {
@@ -985,8 +1012,8 @@ createApp({
         tasks.value.push({
           id: 'custom-' + Math.random().toString(36).substring(2, 9),
           name: name.trim(),
-          status: 'Undone',
-          notes: '',
+          status: 'Done',
+          notes: 'configured',
           meta: {}
         });
       }
@@ -1131,14 +1158,7 @@ createApp({
       websiteUrl.value = '';
       currentReportSavedToSheet.value = false;
       sheetSyncNotice.value = '';
-      tasks.value.forEach(t => {
-        t.status = 'Undone';
-        t.notes = '';
-        if (t.meta) {
-          if (t.meta.phpVersion !== undefined) t.meta.phpVersion = '';
-          if (t.meta.wpVersion !== undefined) t.meta.wpVersion = '';
-        }
-      });
+      tasks.value = getDefaultTasks();
       activeTab.value = 'create';
     };
 
@@ -1255,23 +1275,6 @@ createApp({
         margin: { left: margin, right: margin }
       });
 
-      const finalY = doc.lastAutoTable.finalY + 12;
-      const isComplete = r.incompleteTasks === 0;
-
-      doc.setFillColor(isComplete ? 240 : 255, isComplete ? 253 : 251, isComplete ? 244 : 235);
-      doc.setDrawColor(isComplete ? 110 : 252, isComplete ? 231 : 211, isComplete ? 183 : 77);
-      doc.roundedRect(margin, finalY, width, 36, 3, 3, 'FD');
-
-      doc.setFontSize(7.5);
-      doc.setFont('helvetica', 'bold');
-      doc.setTextColor(isComplete ? 6 : 146, isComplete ? 95 : 64, isComplete ? 70 : 14);
-      doc.text('FINAL AUDIT STATUS', margin + 10, finalY + 12);
-
-      doc.setFont('helvetica', 'normal');
-      doc.setFontSize(8);
-      const splitFin = doc.splitTextToSize(r.finalSummary, width - 20);
-      doc.text(splitFin, margin + 10, finalY + 24);
-
       // Clean filename
       const cleanName = r.websiteUrl.replace(/https?:\/\//i, '').replace(/[^a-zA-Z0-9]/g, '_');
       doc.save('report-' + cleanName + '-' + r.reportDate + '.pdf');
@@ -1302,6 +1305,9 @@ createApp({
       saveToGoogleSheet,
       syncAllToSheet,
       formatTaskDetails,
+      removeTask,
+      resetDefaultTasks,
+      getDefaultTasks,
       addCustomTask,
       fetchReports,
       generateReport,
