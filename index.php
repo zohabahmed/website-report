@@ -369,43 +369,11 @@ if (isset($_GET['api'])) {
       <div class="flex items-center gap-2">
         <button
           @click="startNewReport"
-          :class="activeTab === 'create' ? 'bg-black text-white shadow-xs' : 'text-slate-700 hover:bg-slate-100 border border-slate-200 bg-white'"
-          class="flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg text-xs font-bold transition-colors"
+          class="flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg text-xs font-bold transition-colors bg-black text-white hover:bg-slate-800 shadow-xs cursor-pointer"
         >
           <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
           New Report
         </button>
-
-        <button
-          @click="activeTab = 'history'; fetchReports();"
-          :class="activeTab === 'history' ? 'bg-slate-900 text-white' : 'text-slate-700 hover:bg-slate-100 border border-slate-200 bg-white'"
-          class="flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg text-xs font-semibold transition-colors"
-        >
-          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-          Saved Reports
-        </button>
-
-        <a
-          href="https://docs.google.com/spreadsheets/d/14CCuvMZ0L-ue5nTuIfndTPMKo_0Tdn0Fa3PDlQyVLK0/edit?gid=0#gid=0"
-          target="_blank"
-          rel="noopener noreferrer"
-          title="Open Connected Monthly Google Sheet"
-          class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-emerald-50 hover:bg-emerald-100 text-emerald-800 border border-emerald-300 text-xs font-bold transition-colors"
-        >
-          <svg class="w-3.5 h-3.5 text-emerald-700" viewBox="0 0 24 24" fill="currentColor">
-            <path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zM9 17H7v-2h2v2zm0-4H7v-2h2v2zm0-4H7V7h2v2zm4 8h-2v-2h2v2zm0-4h-2v-2h2v2zm0-4h-2V7h2v2zm4 8h-2v-2h2v2zm0-4h-2v-2h2v2zm0-4h-2V7h2v2z"/>
-          </svg>
-          <span class="hidden sm:inline">Google Sheet</span>
-        </a>
-
-        <a
-          href="?api=export_excel"
-          title="Download Master Excel Report (.csv / .xlsx)"
-          class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-800 border border-slate-300 text-xs font-bold transition-colors"
-        >
-          <svg class="w-3.5 h-3.5 text-slate-700" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
-          <span class="hidden sm:inline">Master Excel</span>
-        </a>
       </div>
     </div>
   </header>
@@ -498,7 +466,7 @@ if (isset($_GET['api'])) {
                   <input
                     type="text"
                     v-model="task.meta.phpVersion"
-                    placeholder="Type PHP version (e.g. PHP 8.3)"
+                    placeholder="Enter PHP version (optional)"
                     class="text-xs px-3 py-1.5 bg-slate-50 text-slate-900 border border-slate-300 rounded-lg outline-none focus:bg-white focus:border-black focus:ring-1 focus:ring-black w-60 placeholder:text-slate-400"
                   />
                   <button v-if="task.meta.phpVersion" @click="task.meta.phpVersion = ''" class="text-[11px] text-slate-400 hover:text-rose-600">Clear</button>
@@ -509,7 +477,7 @@ if (isset($_GET['api'])) {
                   <input
                     type="text"
                     v-model="task.meta.wpVersion"
-                    placeholder="Type WordPress version (e.g. 6.7.1)"
+                    placeholder="Enter WordPress core version (optional)"
                     class="text-xs px-3 py-1.5 bg-slate-50 text-slate-900 border border-slate-300 rounded-lg outline-none focus:bg-white focus:border-black focus:ring-1 focus:ring-black w-60 placeholder:text-slate-400"
                   />
                   <button v-if="task.meta.wpVersion" @click="task.meta.wpVersion = ''" class="text-[11px] text-slate-400 hover:text-rose-600">Clear</button>
@@ -663,7 +631,7 @@ if (isset($_GET['api'])) {
       <!-- 3. CREATE REPORT BUTTON AT BOTTOM -->
       <div class="space-y-3">
         <!-- Save to Sheet Option Toggle -->
-        <div class="bg-white border border-slate-200 rounded-2xl p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3 shadow-xs">
+        <div class="bg-white border border-slate-200 rounded-2xl p-4 flex items-center justify-between gap-3 shadow-xs">
           <label class="flex items-center gap-3 cursor-pointer select-none">
             <input
               type="checkbox"
@@ -680,14 +648,6 @@ if (isset($_GET['api'])) {
               </p>
             </div>
           </label>
-          <a
-            :href="googleSheetUrl"
-            target="_blank"
-            rel="noopener noreferrer"
-            class="text-xs font-bold text-emerald-700 hover:text-emerald-900 inline-flex items-center gap-1 self-start sm:self-auto bg-emerald-50 hover:bg-emerald-100 px-3 py-1.5 rounded-lg border border-emerald-200 transition-colors"
-          >
-            Open Sheet ↗
-          </a>
         </div>
 
         <button
@@ -743,14 +703,6 @@ if (isset($_GET['api'])) {
           <a :href="'?api=export_excel&id=' + currentReport.id" class="px-3 py-1.5 rounded-lg bg-slate-900 hover:bg-black text-white text-xs font-bold shadow-xs">
             Export CSV
           </a>
-          <a
-            :href="googleSheetUrl"
-            target="_blank"
-            rel="noopener noreferrer"
-            class="px-3 py-1.5 rounded-lg border border-emerald-300 bg-emerald-50 hover:bg-emerald-100 text-emerald-800 text-xs font-bold shadow-xs inline-flex items-center gap-1"
-          >
-            Open Sheet ↗
-          </a>
           <button @click="window.print()" class="px-3 py-1.5 rounded-lg border border-slate-300 bg-white hover:bg-slate-50 text-xs font-semibold text-slate-800">
             Print
           </button>
@@ -769,12 +721,7 @@ if (isset($_GET['api'])) {
           <svg class="w-4 h-4 text-emerald-600 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/></svg>
           <span>{{ sheetSyncNotice }}</span>
         </div>
-        <div class="flex items-center gap-3">
-          <a :href="googleSheetUrl" target="_blank" rel="noopener noreferrer" class="font-bold underline text-emerald-800 hover:text-emerald-950">
-            View in Google Sheet ↗
-          </a>
-          <button @click="sheetSyncNotice = ''" class="text-emerald-600 hover:text-emerald-900 font-bold ml-2">✕</button>
-        </div>
+        <button @click="sheetSyncNotice = ''" class="text-emerald-600 hover:text-emerald-900 font-bold ml-2">✕</button>
       </div>
 
       <!-- Printable Report Document Sheet -->

@@ -673,7 +673,7 @@ export const CreateReportPage: React.FC<CreateReportPageProps> = ({
       {/* 3. AT THE END: CREATE REPORT BUTTON */}
       <div className="space-y-3">
         {/* Save to Sheet Option Card */}
-        <div className="bg-white border border-slate-200 rounded-2xl p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3 shadow-xs">
+        <div className="bg-white border border-slate-200 rounded-2xl p-4 flex items-center justify-between gap-3 shadow-xs">
           <label className="flex items-center gap-3 cursor-pointer select-none">
             <input
               type="checkbox"
@@ -691,14 +691,6 @@ export const CreateReportPage: React.FC<CreateReportPageProps> = ({
               </p>
             </div>
           </label>
-          <a
-            href="https://docs.google.com/spreadsheets/d/14CCuvMZ0L-ue5nTuIfndTPMKo_0Tdn0Fa3PDlQyVLK0/edit?gid=0#gid=0"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="text-xs font-bold text-emerald-700 hover:text-emerald-900 inline-flex items-center gap-1 self-start sm:self-auto bg-emerald-50 hover:bg-emerald-100 px-3 py-1.5 rounded-lg border border-emerald-200 transition-colors"
-          >
-            Open Sheet ↗
-          </a>
         </div>
 
         <button
