@@ -350,42 +350,32 @@ if (isset($_GET['api'])) {
   <!-- TOP NAVIGATION BAR -->
   <header class="bg-white border-b border-slate-200 sticky top-0 z-40 shadow-xs no-print">
     <div class="max-w-5xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
-      <div @click="activeTab = 'create'" class="flex items-center gap-3 cursor-pointer group">
-        <div class="w-10 h-10 rounded-xl bg-black flex items-center justify-center text-white shadow-sm group-hover:bg-slate-800 transition-colors">
-          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <div @click="activeTab = 'create'" class="flex items-center gap-2.5 sm:gap-3 cursor-pointer group">
+        <div class="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-black flex items-center justify-center text-white shadow-sm group-hover:bg-slate-800 transition-colors flex-shrink-0">
+          <svg class="w-5 h-5 sm:w-6 sm:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/>
           </svg>
         </div>
         <div>
-          <span class="font-extrabold text-base tracking-tight text-slate-950 block leading-tight">
+          <span class="font-extrabold text-sm sm:text-base tracking-tight text-slate-950 block leading-tight">
             wds-wp-report
           </span>
-          <span class="text-[10px] text-slate-500 font-semibold tracking-wider uppercase">
+          <span class="text-[9px] sm:text-[10px] text-slate-500 font-semibold tracking-wider uppercase">
             WordPress Upgrade & QA Reporter
           </span>
         </div>
       </div>
-
-      <div class="flex items-center gap-2">
-        <button
-          @click="startNewReport"
-          class="flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg text-xs font-bold transition-colors bg-black text-white hover:bg-slate-800 shadow-xs cursor-pointer"
-        >
-          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
-          New Report
-        </button>
-      </div>
     </div>
   </header>
 
-  <main class="max-w-3xl mx-auto px-4 py-8">
+  <main class="max-w-3xl mx-auto px-3 sm:px-4 py-5 sm:py-8">
     
     <!-- ============================================================== -->
     <!-- 1. STREAMLINED REPORT CREATOR VIEW -->
     <!-- ============================================================== -->
-    <div v-if="activeTab === 'create'" class="space-y-6">
+    <div v-if="activeTab === 'create'" class="space-y-4 sm:space-y-6">
       <!-- TOP FIELD: WEBSITE URL -->
-      <div class="bg-white border border-slate-200 rounded-2xl p-6 sm:p-7 shadow-xs">
+      <div class="bg-white border border-slate-200 rounded-2xl p-4 sm:p-7 shadow-xs">
         <label class="block text-xs font-bold uppercase tracking-wider text-slate-800 mb-2 flex items-center justify-between">
           <span class="flex items-center gap-2">
             <svg class="w-4 h-4 text-black" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9"/></svg>
@@ -399,7 +389,7 @@ if (isset($_GET['api'])) {
           v-model="websiteUrl"
           @input="urlError = ''"
           placeholder="Enter website URL (e.g. example.com or https://mywebsite.com)"
-          class="w-full text-base sm:text-lg font-semibold px-4 py-3.5 bg-slate-50 text-slate-900 border rounded-xl outline-none transition-all placeholder:text-slate-400 placeholder:font-normal focus:bg-white focus:border-black focus:ring-2 focus:ring-black/10"
+          class="w-full text-sm sm:text-base md:text-lg font-semibold px-3.5 sm:px-4 py-3 sm:py-3.5 bg-slate-50 text-slate-900 border rounded-xl outline-none transition-all placeholder:text-slate-400 placeholder:font-normal focus:bg-white focus:border-black focus:ring-2 focus:ring-black/10"
           :class="urlError ? 'border-rose-500' : 'border-slate-300'"
           autofocus
         />
@@ -410,7 +400,7 @@ if (isset($_GET['api'])) {
         </p>
 
         <!-- Progress Tracker Bar -->
-        <div class="mt-4 pt-4 border-t border-slate-200 flex items-center justify-between text-xs">
+        <div class="mt-4 pt-4 border-t border-slate-200 flex flex-wrap items-center justify-between gap-1 text-xs">
           <span class="text-slate-600">Progress: <strong class="text-slate-950">{{ completedCount }} of {{ tasks.length }} Completed</strong></span>
           <span class="font-bold" :class="percentage === 100 ? 'text-emerald-700' : (percentage > 0 ? 'text-black' : 'text-slate-400')">
             {{ percentage }}% Done
@@ -423,7 +413,7 @@ if (isset($_GET['api'])) {
 
       <!-- 2. CHECKLIST OF 10 MAINTENANCE TASKS -->
       <div class="bg-white border border-slate-200 rounded-2xl overflow-hidden shadow-xs">
-        <div class="px-6 py-4 border-b border-slate-200 bg-slate-50/70 flex items-center justify-between">
+        <div class="px-4 sm:px-6 py-3.5 sm:py-4 border-b border-slate-200 bg-slate-50/70 flex flex-wrap items-center justify-between gap-2">
           <h2 class="text-xs font-bold uppercase tracking-wider text-slate-800">
             Maintenance Tasks (Mark Done or Undone)
           </h2>
@@ -453,44 +443,44 @@ if (isset($_GET['api'])) {
             class="transition-colors"
             :class="task.status === 'Done' ? 'bg-white hover:bg-slate-50/70' : 'bg-white hover:bg-slate-50/50'"
           >
-            <div class="px-6 py-4 flex items-center justify-between gap-4">
+            <div class="px-4 sm:px-6 py-3.5 sm:py-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-4">
               <!-- Title & Index -->
-              <div class="flex-1 min-w-0">
-                <div class="flex items-center gap-3">
-                  <span class="text-xs font-bold text-slate-400 w-5">{{ idx + 1 }}.</span>
-                  <span class="text-base font-semibold text-slate-900 truncate">{{ task.name }}</span>
+              <div class="flex-1 min-w-0 w-full sm:w-auto">
+                <div class="flex items-start sm:items-center gap-2.5 sm:gap-3">
+                  <span class="text-xs font-bold text-slate-400 w-5 flex-shrink-0 pt-0.5 sm:pt-0">{{ idx + 1 }}.</span>
+                  <span class="text-sm sm:text-base font-semibold text-slate-900 break-words leading-snug">{{ task.name }}</span>
                 </div>
 
                 <!-- PHP Version Text Input (User types the version) -->
-                <div v-if="task.id === 'task-php-version'" class="flex items-center gap-2 mt-2 ml-8">
+                <div v-if="task.id === 'task-php-version'" class="flex items-center gap-2 mt-2 ml-0 sm:ml-7 w-full sm:w-auto">
                   <input
                     type="text"
                     v-model="task.meta.phpVersion"
                     placeholder="Enter PHP version (optional)"
-                    class="text-xs px-3 py-1.5 bg-slate-50 text-slate-900 border border-slate-300 rounded-lg outline-none focus:bg-white focus:border-black focus:ring-1 focus:ring-black w-60 placeholder:text-slate-400"
+                    class="text-xs px-3 py-1.5 bg-slate-50 text-slate-900 border border-slate-300 rounded-lg outline-none focus:bg-white focus:border-black focus:ring-1 focus:ring-black w-full max-w-[260px] sm:w-60 placeholder:text-slate-400"
                   />
-                  <button v-if="task.meta.phpVersion" @click="task.meta.phpVersion = ''" class="text-[11px] text-slate-400 hover:text-rose-600">Clear</button>
+                  <button v-if="task.meta.phpVersion" @click="task.meta.phpVersion = ''" class="text-[11px] text-slate-400 hover:text-rose-600 flex-shrink-0">Clear</button>
                 </div>
 
                 <!-- WordPress Core Version Text Input (User types the version) -->
-                <div v-if="task.id === 'task-wp-core'" class="flex items-center gap-2 mt-2 ml-8">
+                <div v-if="task.id === 'task-wp-core'" class="flex items-center gap-2 mt-2 ml-0 sm:ml-7 w-full sm:w-auto">
                   <input
                     type="text"
                     v-model="task.meta.wpVersion"
                     placeholder="Enter WordPress core version (optional)"
-                    class="text-xs px-3 py-1.5 bg-slate-50 text-slate-900 border border-slate-300 rounded-lg outline-none focus:bg-white focus:border-black focus:ring-1 focus:ring-black w-60 placeholder:text-slate-400"
+                    class="text-xs px-3 py-1.5 bg-slate-50 text-slate-900 border border-slate-300 rounded-lg outline-none focus:bg-white focus:border-black focus:ring-1 focus:ring-black w-full max-w-[260px] sm:w-60 placeholder:text-slate-400"
                   />
-                  <button v-if="task.meta.wpVersion" @click="task.meta.wpVersion = ''" class="text-[11px] text-slate-400 hover:text-rose-600">Clear</button>
+                  <button v-if="task.meta.wpVersion" @click="task.meta.wpVersion = ''" class="text-[11px] text-slate-400 hover:text-rose-600 flex-shrink-0">Clear</button>
                 </div>
 
                 <!-- Notes summary if closed -->
-                <div v-if="task.notes && !expandedNotes[task.id]" class="text-xs text-slate-600 truncate mt-1 ml-8">
+                <div v-if="task.notes && !expandedNotes[task.id]" class="text-xs text-slate-600 truncate mt-1 ml-0 sm:ml-7">
                   {{ task.notes }}
                 </div>
               </div>
 
               <!-- Action Controls: Note + DONE / UNDONE Toggle + REMOVE -->
-              <div class="flex items-center gap-2 flex-shrink-0">
+              <div class="flex items-center justify-end sm:justify-start gap-2 flex-shrink-0 self-end sm:self-center">
                 <button
                   v-if="task.id !== 'task-php-version' && task.id !== 'task-wp-core'"
                   type="button"
@@ -725,43 +715,43 @@ if (isset($_GET['api'])) {
       </div>
 
       <!-- Printable Report Document Sheet -->
-      <div class="bg-white text-slate-900 rounded-2xl border border-slate-200 shadow-sm p-6 sm:p-10 space-y-6 print:p-0 print:border-none print:shadow-none">
+      <div class="bg-white text-slate-900 rounded-2xl border border-slate-200 shadow-sm p-4 sm:p-8 md:p-10 space-y-4 sm:space-y-6 print:p-0 print:border-none print:shadow-none">
         <!-- Header -->
-        <div class="bg-black text-white p-6 rounded-xl flex flex-col md:flex-row md:items-center justify-between gap-4">
+        <div class="bg-black text-white p-4 sm:p-6 rounded-xl flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-4">
           <div>
-            <div class="text-slate-400 text-xs font-bold uppercase tracking-wider mb-1">
+            <div class="text-slate-400 text-[10px] sm:text-xs font-bold uppercase tracking-wider mb-1">
               Technical Audit & Status Log
             </div>
-            <h1 class="text-2xl sm:text-3xl font-extrabold tracking-tight">
+            <h1 class="text-xl sm:text-2xl md:text-3xl font-extrabold tracking-tight">
               Website Maintenance & Upgrade Report
             </h1>
-            <p class="text-xs text-slate-300 mt-1">
+            <p class="text-xs text-slate-300 mt-1 break-all">
               Target Property: <span class="font-bold text-white">{{ currentReport.websiteUrl }}</span>
             </p>
           </div>
-          <div class="bg-slate-900 border border-slate-800 px-4 py-2.5 rounded-lg text-right">
-            <span class="text-[11px] uppercase tracking-wider text-slate-400 block font-semibold">Report Date</span>
-            <span class="text-base font-bold text-white">{{ currentReport.reportDate }}</span>
+          <div class="bg-slate-900 border border-slate-800 px-3.5 py-2 sm:px-4 sm:py-2.5 rounded-lg text-left sm:text-right flex-shrink-0 self-start sm:self-auto">
+            <span class="text-[10px] sm:text-[11px] uppercase tracking-wider text-slate-400 block font-semibold">Report Date</span>
+            <span class="text-sm sm:text-base font-bold text-white">{{ currentReport.reportDate }}</span>
           </div>
         </div>
 
         <!-- Metric Summary -->
-        <div class="grid grid-cols-2 sm:grid-cols-4 gap-4">
-          <div class="bg-slate-50 border border-slate-200 rounded-xl p-3.5">
-            <span class="text-[11px] font-semibold uppercase text-slate-500 block">Total Tasks</span>
-            <span class="text-2xl font-extrabold text-slate-900 block mt-0.5">{{ currentReport.totalTasks }}</span>
+        <div class="grid grid-cols-2 sm:grid-cols-4 gap-2.5 sm:gap-4">
+          <div class="bg-slate-50 border border-slate-200 rounded-xl p-3 sm:p-3.5">
+            <span class="text-[10px] sm:text-[11px] font-semibold uppercase text-slate-500 block">Total Tasks</span>
+            <span class="text-xl sm:text-2xl font-extrabold text-slate-900 block mt-0.5">{{ currentReport.totalTasks }}</span>
           </div>
-          <div class="bg-emerald-50 border border-emerald-200 rounded-xl p-3.5">
-            <span class="text-[11px] font-semibold uppercase text-emerald-800 block">Completed</span>
-            <span class="text-2xl font-extrabold text-emerald-700 block mt-0.5">{{ currentReport.completedTasks }}</span>
+          <div class="bg-emerald-50 border border-emerald-200 rounded-xl p-3 sm:p-3.5">
+            <span class="text-[10px] sm:text-[11px] font-semibold uppercase text-emerald-800 block">Completed</span>
+            <span class="text-xl sm:text-2xl font-extrabold text-emerald-700 block mt-0.5">{{ currentReport.completedTasks }}</span>
           </div>
-          <div class="bg-rose-50 border border-rose-200 rounded-xl p-3.5">
-            <span class="text-[11px] font-semibold uppercase text-rose-800 block">Incomplete</span>
-            <span class="text-2xl font-extrabold text-rose-700 block mt-0.5">{{ currentReport.incompleteTasks }}</span>
+          <div class="bg-rose-50 border border-rose-200 rounded-xl p-3 sm:p-3.5">
+            <span class="text-[10px] sm:text-[11px] font-semibold uppercase text-rose-800 block">Incomplete</span>
+            <span class="text-xl sm:text-2xl font-extrabold text-rose-700 block mt-0.5">{{ currentReport.incompleteTasks }}</span>
           </div>
-          <div class="bg-slate-100 border border-slate-300 rounded-xl p-3.5">
-            <span class="text-[11px] font-semibold uppercase text-slate-800 block">Readiness</span>
-            <span class="text-2xl font-extrabold text-slate-900 block mt-0.5">{{ currentReport.completionPercentage }}%</span>
+          <div class="bg-slate-100 border border-slate-300 rounded-xl p-3 sm:p-3.5">
+            <span class="text-[10px] sm:text-[11px] font-semibold uppercase text-slate-800 block">Readiness</span>
+            <span class="text-xl sm:text-2xl font-extrabold text-slate-900 block mt-0.5">{{ currentReport.completionPercentage }}%</span>
           </div>
         </div>
 
@@ -776,8 +766,8 @@ if (isset($_GET['api'])) {
         <!-- Detailed Checklist Table -->
         <div class="space-y-2">
           <h2 class="text-sm font-bold text-slate-900 uppercase tracking-wide">Detailed Maintenance Checklist</h2>
-          <div class="border border-slate-200 rounded-xl overflow-hidden">
-            <table class="w-full text-left text-xs">
+          <div class="border border-slate-200 rounded-xl overflow-x-auto">
+            <table class="w-full min-w-[560px] text-left text-xs">
               <thead class="bg-black text-white uppercase text-[10px] tracking-wider font-bold">
                 <tr>
                   <th class="py-3 px-3 w-12 text-center">No.</th>

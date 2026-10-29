@@ -48,21 +48,7 @@ export const Navbar: React.FC<NavbarProps> = ({ currentTab, onNavigate }) => {
             </div>
           </div>
 
-          {/* Navigation Links */}
-          <nav className="hidden md:flex items-center space-x-1.5">
-            <button
-              onClick={() => onNavigate('create')}
-              className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-bold transition-colors ${
-                currentTab === 'create'
-                  ? 'bg-black text-white shadow-xs'
-                  : 'text-slate-700 hover:bg-slate-100 hover:text-black border border-slate-200 bg-white'
-              }`}
-            >
-              <PlusCircle className="w-4 h-4" />
-              New Report
-            </button>
-          </nav>
-
+          {/* Right Header Status */}
           <div className="flex items-center gap-2">
             <div className="flex items-center gap-2 px-2.5 py-1.5 rounded-lg bg-slate-100 border border-slate-200 text-xs text-slate-700 font-medium">
               <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
