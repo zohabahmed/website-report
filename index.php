@@ -338,9 +338,10 @@ if (isset($_GET['api'])) {
   <!-- Vue 3 Standalone CDN -->
   <script src="https://unpkg.com/vue@3/dist/vue.global.prod.js"></script>
   
-  <!-- jsPDF & AutoTable for client-side PDF export -->
+  <!-- jsPDF & AutoTable & html2canvas for client-side PDF export -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.2/jspdf.plugin.autotable.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 
   <style>
     @media print {
@@ -380,170 +381,183 @@ if (isset($_GET['api'])) {
     <!-- 1. STREAMLINED REPORT CREATOR VIEW -->
     <!-- ============================================================== -->
     <div v-if="activeTab === 'create'" class="space-y-4 sm:space-y-6">
-      <!-- TOP FIELD: WEBSITE URL -->
-      <div class="bg-white border border-slate-200 rounded-2xl p-4 sm:p-7 shadow-xs">
-        <label class="block text-xs font-bold uppercase tracking-wider text-slate-800 mb-2 flex items-center justify-between">
-          <span class="flex items-center gap-2">
+      <!-- TOP FIELD: WEBSITE URL (Compact & Clean) -->
+      <div class="bg-white border border-slate-200 rounded-xl p-3.5 sm:p-5 shadow-xs">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-2">
+          <label class="text-xs font-bold uppercase tracking-wider text-slate-800 flex items-center gap-1.5">
             <svg class="w-4 h-4 text-black" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9"/></svg>
             Website URL
-          </span>
-          <span class="text-[11px] text-slate-500 font-semibold lowercase">required</span>
-        </label>
+          </label>
+          <div class="flex items-center gap-2 text-xs">
+            <span class="text-slate-600">Progress: <strong class="text-slate-950">{{ completedCount }} of {{ tasks.length }} Done</strong></span>
+            <span class="font-bold text-xs" :class="percentage === 100 ? 'text-emerald-700' : (percentage > 0 ? 'text-black' : 'text-slate-400')">
+              {{ percentage }}%
+            </span>
+          </div>
+        </div>
 
         <input
           type="text"
           v-model="websiteUrl"
           @input="urlError = ''"
           placeholder="Enter website URL (e.g. example.com or https://mywebsite.com)"
-          class="w-full text-sm sm:text-base md:text-lg font-semibold px-3.5 sm:px-4 py-3 sm:py-3.5 bg-slate-50 text-slate-900 border rounded-xl outline-none transition-all placeholder:text-slate-400 placeholder:font-normal focus:bg-white focus:border-black focus:ring-2 focus:ring-black/10"
+          class="w-full text-sm font-semibold px-3.5 py-2.5 bg-slate-50 text-slate-900 border rounded-xl outline-none transition-all placeholder:text-slate-400 placeholder:font-normal focus:bg-white focus:border-black focus:ring-1 focus:ring-black"
           :class="urlError ? 'border-rose-500' : 'border-slate-300'"
           autofocus
         />
 
-        <p v-if="urlError" class="text-xs text-rose-600 mt-2 font-medium flex items-center gap-1">
+        <p v-if="urlError" class="text-xs text-rose-600 mt-1.5 font-medium flex items-center gap-1">
           <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>
           {{ urlError }}
         </p>
 
-        <!-- Progress Tracker Bar -->
-        <div class="mt-4 pt-4 border-t border-slate-200 flex flex-wrap items-center justify-between gap-1 text-xs">
-          <span class="text-slate-600">Progress: <strong class="text-slate-950">{{ completedCount }} of {{ tasks.length }} Completed</strong></span>
-          <span class="font-bold" :class="percentage === 100 ? 'text-emerald-700' : (percentage > 0 ? 'text-black' : 'text-slate-400')">
-            {{ percentage }}% Done
-          </span>
-        </div>
-        <div class="w-full bg-slate-200 h-2 rounded-full overflow-hidden mt-2">
-          <div class="h-2 transition-all duration-300" :style="{ width: percentage + '%' }" :class="percentage === 100 ? 'bg-emerald-600' : 'bg-black'"></div>
+        <div class="w-full bg-slate-200 h-1.5 rounded-full overflow-hidden mt-2.5">
+          <div class="h-1.5 transition-all duration-300" :style="{ width: percentage + '%' }" :class="percentage === 100 ? 'bg-emerald-600' : 'bg-black'"></div>
         </div>
       </div>
 
-      <!-- 2. CHECKLIST OF 10 MAINTENANCE TASKS -->
-      <div class="bg-white border border-slate-200 rounded-2xl overflow-hidden shadow-xs">
-        <div class="px-4 sm:px-6 py-3.5 sm:py-4 border-b border-slate-200 bg-slate-50/70 flex flex-wrap items-center justify-between gap-2">
-          <h2 class="text-xs font-bold uppercase tracking-wider text-slate-800">
-            Maintenance Tasks (Mark Done or Undone)
-          </h2>
+      <!-- 2. CHECKLIST OF MAINTENANCE TASKS (2-Column Compact Grid - No endless scrolling!) -->
+      <div class="bg-white border border-slate-200 rounded-xl overflow-hidden shadow-xs">
+        <div class="px-3.5 sm:px-4 py-2.5 border-b border-slate-200 bg-slate-50/70 flex flex-wrap items-center justify-between gap-2">
           <div class="flex items-center gap-2">
+            <h2 class="text-xs font-bold uppercase tracking-wider text-slate-800">
+              Maintenance Tasks
+            </h2>
+            <span class="text-[11px] font-semibold text-slate-500 bg-slate-200/80 px-2 py-0.5 rounded-full">
+              {{ tasks.length }}
+            </span>
+          </div>
+
+          <div class="flex items-center gap-3">
+            <div class="flex items-center gap-2 text-xs">
+              <button
+                type="button"
+                @click="markAllTasks('Done')"
+                class="text-slate-600 hover:text-black font-semibold underline cursor-pointer"
+              >
+                Mark All Done
+              </button>
+              <span class="text-slate-300">|</span>
+              <button
+                type="button"
+                @click="markAllTasks('Undone')"
+                class="text-slate-600 hover:text-black font-semibold underline cursor-pointer"
+              >
+                Mark All Undone
+              </button>
+            </div>
+            <!-- Quick submit button right in header: instant report creation without scrolling! -->
             <button
               type="button"
-              @click="markAllTasks('Done')"
-              class="text-xs text-slate-500 hover:text-black font-semibold underline cursor-pointer"
+              @click="generateReport"
+              class="hidden sm:inline-flex items-center gap-1.5 px-3 py-1 rounded-lg bg-black hover:bg-slate-800 text-white text-xs font-bold shadow-xs cursor-pointer"
+              title="Generate report immediately"
             >
-              Mark All Done
-            </button>
-            <span class="text-slate-300">|</span>
-            <button
-              type="button"
-              @click="markAllTasks('Undone')"
-              class="text-xs text-slate-500 hover:text-black font-semibold underline cursor-pointer"
-            >
-              Mark All Undone
+              <span>Create Report →</span>
             </button>
           </div>
         </div>
 
-        <div class="divide-y divide-slate-200">
+        <!-- 2-Column Responsive Grid on md+ screens -->
+        <div class="p-2.5 sm:p-3.5 grid grid-cols-1 md:grid-cols-2 gap-2 sm:gap-2.5">
           <div
             v-for="(task, idx) in tasks"
             :key="task.id"
-            class="transition-colors"
-            :class="task.status === 'Done' ? 'bg-white hover:bg-slate-50/70' : 'bg-white hover:bg-slate-50/50'"
+            class="rounded-xl border transition-all p-2.5 sm:p-3 flex items-center justify-between gap-2"
+            :class="task.status === 'Done' ? 'bg-emerald-50/30 border-emerald-200/70 hover:bg-emerald-50/50' : 'bg-white border-slate-200/80 hover:border-slate-300 hover:bg-slate-50/40'"
           >
-            <div class="px-4 sm:px-6 py-3.5 sm:py-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-4">
-              <!-- Standard Pre-defined Task Row -->
-              <div v-if="!task.isCustom" class="flex-1 min-w-0 w-full sm:w-auto">
-                <div class="flex items-start sm:items-center gap-2.5 sm:gap-3">
-                  <span class="text-xs font-bold text-slate-400 w-5 flex-shrink-0 pt-0.5 sm:pt-0">{{ idx + 1 }}.</span>
-                  <span class="text-sm sm:text-base font-semibold text-slate-900 break-words leading-snug">{{ task.name }}</span>
-                </div>
-
-                <!-- PHP Version Text Input (User types the version) -->
-                <div v-if="task.id === 'task-php-version'" class="flex items-center gap-2 mt-2 ml-0 sm:ml-7 w-full sm:w-auto">
-                  <input
-                    type="text"
-                    v-model="task.meta.phpVersion"
-                    placeholder="Enter PHP version (optional)"
-                    class="text-xs px-3 py-1.5 bg-slate-50 text-slate-900 border border-slate-300 rounded-lg outline-none focus:bg-white focus:border-black focus:ring-1 focus:ring-black w-full max-w-[260px] sm:w-60 placeholder:text-slate-400"
-                  />
-                  <button v-if="task.meta.phpVersion" @click="task.meta.phpVersion = ''" class="text-[11px] text-slate-400 hover:text-rose-600 flex-shrink-0">Clear</button>
-                </div>
-
-                <!-- WordPress Core Version Text Input (User types the version) -->
-                <div v-if="task.id === 'task-wp-core'" class="flex items-center gap-2 mt-2 ml-0 sm:ml-7 w-full sm:w-auto">
-                  <input
-                    type="text"
-                    v-model="task.meta.wpVersion"
-                    placeholder="Enter WordPress core version (optional)"
-                    class="text-xs px-3 py-1.5 bg-slate-50 text-slate-900 border border-slate-300 rounded-lg outline-none focus:bg-white focus:border-black focus:ring-1 focus:ring-black w-full max-w-[260px] sm:w-60 placeholder:text-slate-400"
-                  />
-                  <button v-if="task.meta.wpVersion" @click="task.meta.wpVersion = ''" class="text-[11px] text-slate-400 hover:text-rose-600 flex-shrink-0">Clear</button>
-                </div>
-
-                <!-- Notes summary text for standard tasks (clean static text, no buttons) -->
-                <div v-if="task.notes" class="text-xs text-slate-500 font-medium mt-1 ml-0 sm:ml-7">
-                  {{ task.notes }}
-                </div>
+            <!-- Standard Task Row -->
+            <div v-if="!task.isCustom" class="flex-1 min-w-0 pr-1">
+              <div class="flex items-center gap-2">
+                <span class="text-xs font-bold text-slate-400 w-4 flex-shrink-0">{{ idx + 1 }}.</span>
+                <span class="text-xs sm:text-sm font-semibold text-slate-900 truncate" :title="task.name">{{ task.name }}</span>
               </div>
 
-              <!-- Custom Task Row (Added directly next to last field, manual input) -->
-              <div v-else class="flex-1 min-w-0 w-full sm:w-auto space-y-2">
-                <div class="flex items-center gap-2.5 sm:gap-3">
-                  <span class="text-xs font-bold text-slate-400 w-5 flex-shrink-0">{{ idx + 1 }}.</span>
-                  <input
-                    type="text"
-                    v-model="task.name"
-                    placeholder="Enter custom task name..."
-                    class="text-sm font-semibold px-3 py-1.5 bg-slate-50 text-slate-900 border border-slate-300 rounded-lg outline-none focus:bg-white focus:border-black focus:ring-1 focus:ring-black w-full placeholder:font-normal placeholder:text-slate-400"
-                    autofocus
-                  />
-                </div>
-                <div class="ml-0 sm:ml-7">
-                  <input
-                    type="text"
-                    v-model="task.notes"
-                    placeholder="Configuration / Notes / Version (manual input)"
-                    class="text-xs px-3 py-1.5 bg-slate-50 text-slate-700 border border-slate-200 rounded-lg outline-none focus:bg-white focus:border-black focus:ring-1 focus:ring-black w-full placeholder:text-slate-400"
-                  />
-                </div>
+              <!-- PHP Version Text Input -->
+              <div v-if="task.id === 'task-php-version'" class="flex items-center gap-1.5 mt-1.5 ml-6">
+                <input
+                  type="text"
+                  v-model="task.meta.phpVersion"
+                  placeholder="Enter PHP version..."
+                  class="text-[11px] px-2.5 py-1 bg-white text-slate-900 border border-slate-300 rounded-lg outline-none focus:border-black w-full max-w-[200px]"
+                />
+                <button v-if="task.meta.phpVersion" @click="task.meta.phpVersion = ''" class="text-[11px] text-slate-400 hover:text-rose-600 flex-shrink-0">Clear</button>
               </div>
 
-              <!-- Action Controls: ONLY DONE / UNDONE Toggle + REMOVE -->
-              <div class="flex items-center justify-end sm:justify-start gap-2 flex-shrink-0 self-end sm:self-center">
-                <button
-                  type="button"
-                  @click="task.status = (task.status === 'Done' ? 'Undone' : 'Done')"
-                  :class="task.status === 'Done' ? 'bg-emerald-600 hover:bg-emerald-700 text-white border-emerald-600 shadow-xs' : 'bg-rose-600 hover:bg-rose-700 text-white border-rose-600 shadow-xs'"
-                  class="px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 border cursor-pointer"
-                >
-                  <span v-if="task.status === 'Done'">✓ Done</span>
-                  <span v-else>✕ Undone</span>
-                </button>
-
-                <button
-                  type="button"
-                  @click="removeTask(task.id)"
-                  title="Remove this field"
-                  class="p-1.5 text-slate-400 hover:text-rose-600 hover:bg-rose-50 rounded-lg transition-colors cursor-pointer"
-                >
-                  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
-                </button>
+              <!-- WordPress Core Version Text Input -->
+              <div v-if="task.id === 'task-wp-core'" class="flex items-center gap-1.5 mt-1.5 ml-6">
+                <input
+                  type="text"
+                  v-model="task.meta.wpVersion"
+                  placeholder="Enter WP version..."
+                  class="text-[11px] px-2.5 py-1 bg-white text-slate-900 border border-slate-300 rounded-lg outline-none focus:border-black w-full max-w-[200px]"
+                />
+                <button v-if="task.meta.wpVersion" @click="task.meta.wpVersion = ''" class="text-[11px] text-slate-400 hover:text-rose-600 flex-shrink-0">Clear</button>
               </div>
+
+              <!-- Clean static note text (no buttons) -->
+              <div v-if="task.notes" class="text-[11px] text-slate-500 font-medium truncate mt-0.5 ml-6">
+                {{ task.notes }}
+              </div>
+            </div>
+
+            <!-- Custom Task Row (Added directly inline in the grid slot) -->
+            <div v-else class="flex-1 min-w-0 space-y-1.5 pr-1">
+              <div class="flex items-center gap-2">
+                <span class="text-xs font-bold text-slate-400 w-4 flex-shrink-0">{{ idx + 1 }}.</span>
+                <input
+                  type="text"
+                  v-model="task.name"
+                  placeholder="Enter custom task name..."
+                  class="text-xs font-semibold px-2.5 py-1 bg-white text-slate-900 border border-slate-300 rounded-lg outline-none focus:border-black w-full"
+                  autofocus
+                />
+              </div>
+              <div class="ml-6">
+                <input
+                  type="text"
+                  v-model="task.notes"
+                  placeholder="Configuration / Notes / Version (manual input)"
+                  class="text-[11px] px-2.5 py-1 bg-white text-slate-700 border border-slate-200 rounded-lg outline-none focus:border-black w-full"
+                />
+              </div>
+            </div>
+
+            <!-- Action Controls: DONE/UNDONE & TRASH -->
+            <div class="flex items-center gap-1.5 flex-shrink-0">
+              <button
+                type="button"
+                @click="task.status = (task.status === 'Done' ? 'Undone' : 'Done')"
+                :class="task.status === 'Done' ? 'bg-emerald-600 hover:bg-emerald-700 text-white' : 'bg-rose-600 hover:bg-rose-700 text-white'"
+                class="px-2.5 py-1 rounded-lg text-[11px] font-bold transition-all flex items-center gap-1 cursor-pointer shadow-2xs"
+              >
+                <span v-if="task.status === 'Done'">✓ Done</span>
+                <span v-else>✕ Undone</span>
+              </button>
+
+              <button
+                type="button"
+                @click="removeTask(task.id)"
+                title="Remove this field"
+                class="p-1 text-slate-400 hover:text-rose-600 hover:bg-rose-50 rounded-lg transition-colors cursor-pointer"
+              >
+                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
+              </button>
             </div>
           </div>
         </div>
 
-        <div class="px-4 sm:px-6 py-3.5 sm:py-4 border-t border-slate-100 bg-white flex flex-wrap items-center justify-between gap-3">
-          <div class="flex items-center gap-2">
-            <button
-              type="button"
-              @click="addCustomTask"
-              class="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl border border-slate-200 bg-white hover:bg-slate-50 text-slate-800 hover:text-black text-xs font-semibold shadow-xs transition-all cursor-pointer"
-            >
-              <svg class="w-3.5 h-3.5 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
-              Add Custom Field
-            </button>
-          </div>
-          <span class="text-xs text-slate-400 font-medium">{{ tasks.length }} Tasks Active</span>
+        <!-- Bottom bar of checklist card -->
+        <div class="px-3.5 sm:px-4 py-2.5 border-t border-slate-100 bg-white flex items-center justify-between">
+          <button
+            type="button"
+            @click="addCustomTask"
+            class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-slate-200 bg-white hover:bg-slate-50 text-slate-800 hover:text-black text-xs font-semibold shadow-xs transition-all cursor-pointer"
+          >
+            <svg class="w-3.5 h-3.5 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
+            Add Custom Field
+          </button>
+          <span class="text-xs text-slate-400 font-medium">{{ tasks.length }} Tasks</span>
         </div>
       </div>
 
@@ -552,9 +566,9 @@ if (isset($_GET['api'])) {
         <button
           type="button"
           @click="generateReport"
-          class="w-full py-4 px-6 rounded-2xl bg-black hover:bg-slate-800 text-white font-extrabold text-base sm:text-lg shadow-lg shadow-black/10 transition-all hover:scale-[1.005] flex items-center justify-center gap-2 cursor-pointer"
+          class="w-full py-3.5 px-6 rounded-xl bg-black hover:bg-slate-800 text-white font-extrabold text-base shadow-lg shadow-black/10 transition-all hover:scale-[1.003] flex items-center justify-center gap-2 cursor-pointer"
         >
-          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
           <span>Create Website Maintenance Report</span>
         </button>
       </div>
@@ -576,31 +590,23 @@ if (isset($_GET['api'])) {
             ← Edit Tasks
           </button>
 
-          <!-- Explicit Save to Sheet Button with loading & status -->
+          <!-- Download PDF (Renders exact high-resolution visual replica of this preview) -->
           <button
-            @click="saveToGoogleSheet(currentReport)"
-            :disabled="sheetSyncing"
-            class="px-3.5 py-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-700 disabled:opacity-50 text-white text-xs font-bold shadow-xs inline-flex items-center gap-1.5 cursor-pointer transition-colors"
-            title="Push this report directly to your connected Google Sheet"
+            @click="downloadPdf"
+            :disabled="downloadingPdf"
+            class="px-3.5 py-1.5 rounded-lg bg-black hover:bg-slate-800 disabled:opacity-50 text-white text-xs font-bold shadow-xs inline-flex items-center gap-1.5 cursor-pointer"
           >
-            <svg v-if="sheetSyncing" class="w-3.5 h-3.5 animate-spin" viewBox="0 0 24 24" fill="none">
+            <svg v-if="downloadingPdf" class="w-3.5 h-3.5 animate-spin" viewBox="0 0 24 24" fill="none">
               <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
               <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z"></path>
             </svg>
-            <svg v-else class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="currentColor">
-              <path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zM9 17H7v-2h2v2zm0-4H7v-2h2v2zm0-4H7V7h2v2zm4 8h-2v-2h2v2zm0-4h-2v-2h2v2zm0-4h-2V7h2v2zm4 8h-2v-2h2v2zm0-4h-2v-2h2v2zm0-4h-2V7h2v2z"/>
+            <svg v-else class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/>
             </svg>
-            <span v-if="sheetSyncing">Saving to Sheet...</span>
-            <span v-else-if="currentReportSavedToSheet">✓ Saved to Sheet</span>
-            <span v-else>Save to Sheet</span>
+            <span v-if="downloadingPdf">Generating PDF...</span>
+            <span v-else>Download PDF</span>
           </button>
 
-          <button @click="downloadPdf" class="px-3.5 py-1.5 rounded-lg bg-black hover:bg-slate-800 text-white text-xs font-bold shadow-xs">
-            Download PDF
-          </button>
-          <a :href="'?api=export_excel&id=' + currentReport.id" class="px-3 py-1.5 rounded-lg bg-slate-900 hover:bg-black text-white text-xs font-bold shadow-xs">
-            Export CSV
-          </a>
           <button @click="window.print()" class="px-3 py-1.5 rounded-lg border border-slate-300 bg-white hover:bg-slate-50 text-xs font-semibold text-slate-800">
             Print
           </button>
@@ -622,8 +628,8 @@ if (isset($_GET['api'])) {
         <button @click="sheetSyncNotice = ''" class="text-emerald-600 hover:text-emerald-900 font-bold ml-2">✕</button>
       </div>
 
-      <!-- Printable Report Document Sheet -->
-      <div class="bg-white text-slate-900 rounded-2xl border border-slate-200 shadow-sm p-4 sm:p-8 md:p-10 space-y-4 sm:space-y-6 print:p-0 print:border-none print:shadow-none">
+      <!-- Printable Report Document Sheet (Target container with id="report-document") -->
+      <div id="report-document" class="bg-white text-slate-900 rounded-2xl border border-slate-200 shadow-sm p-4 sm:p-8 md:p-10 space-y-4 sm:space-y-6 print:p-0 print:border-none print:shadow-none">
         <!-- Header -->
         <div class="bg-black text-white p-4 sm:p-6 rounded-xl flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-4">
           <div>
@@ -832,6 +838,7 @@ createApp({
     const sheetSyncNotice = ref('');
     const syncingAll = ref(false);
     const syncProgress = ref('');
+    const downloadingPdf = ref(false);
 
     // Standard Default Tasks with configured notes (Website QA moved to the last, default Undone)
     const getDefaultTasks = () => [
@@ -1079,77 +1086,82 @@ createApp({
       alert('Report copied to clipboard!');
     };
 
-    const downloadPdf = () => {
-      const { jsPDF } = window.jspdf;
-      const doc = new jsPDF('p', 'pt', 'a4');
-      const r = currentReport.value;
-      const margin = 36;
-      const width = doc.internal.pageSize.getWidth() - margin * 2;
+    const downloadPdf = async () => {
+      const el = document.getElementById('report-document');
+      if (!el) {
+        window.print();
+        return;
+      }
+      downloadingPdf.value = true;
 
-      // Header Banner
-      doc.setFillColor(15, 23, 42); // slate-900
-      doc.rect(margin, 30, width, 52, 'F');
-      doc.setTextColor(255, 255, 255);
-      doc.setFontSize(13);
-      doc.setFont('helvetica', 'bold');
-      doc.text('Website Maintenance & Upgrade Report', margin + 14, 50);
-      doc.setFontSize(8.5);
-      doc.setTextColor(148, 163, 184); // slate-400
-      doc.setFont('helvetica', 'normal');
-      doc.text(r.websiteUrl + '   |   Report Date: ' + r.reportDate + '   |   Readiness: ' + r.completedTasks + '/' + r.totalTasks + ' Tasks (' + r.completionPercentage + '%)', margin + 14, 68);
+      try {
+        const r = currentReport.value;
+        const cleanName = r.websiteUrl.replace(/https?:\/\//i, '').replace(/[^a-zA-Z0-9]/g, '_');
+        const filename = 'report-' + cleanName + '-' + r.reportDate + '.pdf';
 
-      // Executive Summary box
-      doc.setFillColor(248, 250, 252);
-      doc.setDrawColor(226, 232, 240);
-      doc.roundedRect(margin, 90, width, 40, 3, 3, 'FD');
-      doc.setFontSize(7.5);
-      doc.setFont('helvetica', 'bold');
-      doc.setTextColor(51, 65, 85);
-      doc.text('EXECUTIVE SUMMARY', margin + 10, 102);
-      doc.setFont('helvetica', 'normal');
-      doc.setFontSize(8);
-      doc.setTextColor(71, 85, 105);
-      const splitExec = doc.splitTextToSize(r.executiveSummary, width - 20);
-      doc.text(splitExec, margin + 10, 114);
+        // Clone the element to a fixed 800px width off-screen container.
+        // This ensures the exported PDF has the exact desktop proportions and visual styling
+        // matching the preview page, regardless of whether the user is on mobile or desktop.
+        const clone = el.cloneNode(true);
+        clone.id = 'report-document-pdf-render';
+        clone.style.width = '800px';
+        clone.style.maxWidth = '800px';
+        clone.style.minWidth = '800px';
+        clone.style.position = 'fixed';
+        clone.style.left = '-9999px';
+        clone.style.top = '0';
+        clone.style.zIndex = '-9999';
+        clone.style.backgroundColor = '#ffffff';
+        document.body.appendChild(clone);
 
-      // Table of tasks
-      const rows = r.tasks.map((t, idx) => [
-        idx + 1,
-        t.name,
-        t.status === 'Done' ? 'DONE' : 'UNDONE',
-        formatTaskDetails(t)
-      ]);
+        // Small pause for SVG and font rendering
+        await new Promise(resolve => setTimeout(resolve, 150));
 
-      doc.autoTable({
-        startY: 138,
-        head: [['No.', 'Task Name', 'Status', 'Configuration / Notes / Version']],
-        body: rows,
-        theme: 'grid',
-        headStyles: { fillColor: [30, 41, 59], textColor: [255, 255, 255], fontSize: 8, fontStyle: 'bold' },
-        bodyStyles: { fontSize: 7.5, cellPadding: 3.5 },
-        columnStyles: {
-          0: { cellWidth: 24, halign: 'center' },
-          1: { cellWidth: 155, fontStyle: 'bold' },
-          2: { cellWidth: 55, halign: 'center' },
-          3: { cellWidth: 'auto' }
-        },
-        didParseCell: (data) => {
-          if (data.section === 'body' && data.column.index === 2) {
-            if (data.cell.raw === 'DONE') {
-              data.cell.styles.textColor = [5, 150, 105]; // emerald
-              data.cell.styles.fontStyle = 'bold';
-            } else {
-              data.cell.styles.textColor = [220, 38, 38]; // rose
-              data.cell.styles.fontStyle = 'bold';
-            }
+        // High-resolution capture at 2x retina scale
+        const canvas = await html2canvas(clone, {
+          scale: 2,
+          useCORS: true,
+          logging: false,
+          backgroundColor: '#ffffff'
+        });
+
+        document.body.removeChild(clone);
+
+        const imgData = canvas.toDataURL('image/jpeg', 0.98);
+        const { jsPDF } = window.jspdf;
+        const pdf = new jsPDF('p', 'mm', 'a4');
+        const pageWidth = pdf.internal.pageSize.getWidth();
+        const pageHeight = pdf.internal.pageSize.getHeight();
+        const margin = 8;
+        const printWidth = pageWidth - (margin * 2);
+        const printHeight = (canvas.height * printWidth) / canvas.width;
+
+        if (printHeight <= (pageHeight - margin * 2)) {
+          // Fits cleanly on a single A4 page
+          pdf.addImage(imgData, 'JPEG', margin, margin, printWidth, printHeight);
+        } else {
+          // Multi-page slicing if tasks exceed 1 page
+          let heightLeft = printHeight;
+          let position = margin;
+
+          pdf.addImage(imgData, 'JPEG', margin, position, printWidth, printHeight);
+          heightLeft -= (pageHeight - margin * 2);
+
+          while (heightLeft > 0) {
+            position = margin - (printHeight - heightLeft);
+            pdf.addPage();
+            pdf.addImage(imgData, 'JPEG', margin, position, printWidth, printHeight);
+            heightLeft -= (pageHeight - margin * 2);
           }
-        },
-        margin: { left: margin, right: margin }
-      });
+        }
 
-      // Clean filename
-      const cleanName = r.websiteUrl.replace(/https?:\/\//i, '').replace(/[^a-zA-Z0-9]/g, '_');
-      doc.save('report-' + cleanName + '-' + r.reportDate + '.pdf');
+        pdf.save(filename);
+      } catch (err) {
+        console.error('PDF export error, falling back to window.print():', err);
+        window.print();
+      } finally {
+        downloadingPdf.value = false;
+      }
     };
 
     onMounted(() => {
@@ -1174,6 +1186,7 @@ createApp({
       sheetSyncNotice,
       syncingAll,
       syncProgress,
+      downloadingPdf,
       saveToGoogleSheet,
       syncAllToSheet,
       formatTaskDetails,

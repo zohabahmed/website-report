@@ -338,163 +338,171 @@ export const CreateReportPage: React.FC<CreateReportPageProps> = ({
         </div>
       </div>
 
-      {/* 2. THE 9 CHECKLIST FIELDS (SHOWN DIRECTLY) */}
-      <div className="bg-white border border-slate-200 rounded-2xl overflow-hidden shadow-xs">
-        <div className="px-6 py-4 border-b border-slate-200 bg-slate-50/70 flex items-center justify-between">
-          <h2 className="text-sm font-bold uppercase tracking-wider text-slate-800">
-            Maintenance Checklist (Mark Done or Undone)
-          </h2>
-          <span className="text-xs text-slate-500 font-medium">
-            Click toggle to switch status
-          </span>
+      {/* 2. THE CHECKLIST FIELDS (2-Column Compact Grid) */}
+      <div className="bg-white border border-slate-200 rounded-xl overflow-hidden shadow-xs">
+        <div className="px-3.5 sm:px-4 py-2.5 border-b border-slate-200 bg-slate-50/70 flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <h2 className="text-xs font-bold uppercase tracking-wider text-slate-800">
+              Maintenance Tasks
+            </h2>
+            <span className="text-[11px] font-semibold text-slate-500 bg-slate-200/80 px-2 py-0.5 rounded-full">
+              {tasks.length}
+            </span>
+          </div>
+
+          <div className="flex items-center gap-3">
+            <button
+              type="button"
+              onClick={handleCreateReport}
+              className="hidden sm:inline-flex items-center gap-1.5 px-3 py-1 rounded-lg bg-black hover:bg-slate-800 text-white text-xs font-bold shadow-xs cursor-pointer"
+            >
+              <span>Create Report →</span>
+            </button>
+          </div>
         </div>
 
         {loading ? (
-          <div className="p-12 text-center text-slate-400 text-sm">
+          <div className="p-8 text-center text-slate-400 text-xs">
             Loading checklist...
           </div>
         ) : (
-          <div className="divide-y divide-slate-200">
+          <div className="p-2.5 sm:p-3.5 grid grid-cols-1 md:grid-cols-2 gap-2 sm:gap-2.5">
             {tasks.map((task, idx) => {
               const isDone = task.status === 'Done';
-              const hasNotes = Boolean(task.notes?.trim());
-              const isExpanded = expandedNotes[task.id];
 
               return (
                 <div
                   key={task.id}
-                  className={`transition-colors ${
-                    isDone ? 'bg-white hover:bg-slate-50/70' : 'bg-white hover:bg-slate-50/50'
+                  className={`rounded-xl border transition-all p-2.5 sm:p-3 flex items-center justify-between gap-2 ${
+                    isDone
+                      ? 'bg-emerald-50/30 border-emerald-200/70 hover:bg-emerald-50/50'
+                      : 'bg-white border-slate-200/80 hover:border-slate-300 hover:bg-slate-50/40'
                   }`}
                 >
-                  <div className="px-6 py-4 flex items-center justify-between gap-4">
-                    {/* Standard vs Custom Task Row */}
-                    {task.isCustom ? (
-                      <div className="flex-1 min-w-0 space-y-2">
-                        <div className="flex items-center gap-3">
-                          <span className="text-xs font-bold text-slate-400 w-5 flex-shrink-0">
-                            {idx + 1}.
-                          </span>
-                          <input
-                            type="text"
-                            value={task.name}
-                            onChange={(e) => {
-                              const updated = tasks.map((t) => t.id === task.id ? { ...t, name: e.target.value } : t);
-                              setTasks(updated);
-                            }}
-                            placeholder="Enter custom task name..."
-                            className="text-sm font-semibold px-3 py-1.5 bg-slate-50 text-slate-900 border border-slate-300 rounded-lg outline-none focus:bg-white focus:border-black focus:ring-1 focus:ring-black w-full"
-                            autoFocus
-                          />
-                        </div>
-                        <div className="ml-7">
-                          <input
-                            type="text"
-                            value={task.notes || ''}
-                            onChange={(e) => handleNotesChange(task.id, e.target.value)}
-                            placeholder="Configuration / Notes / Version (manual input)"
-                            className="text-xs px-3 py-1.5 bg-slate-50 text-slate-700 border border-slate-200 rounded-lg outline-none focus:bg-white focus:border-black focus:ring-1 focus:ring-black w-full placeholder:text-slate-400"
-                          />
-                        </div>
-                      </div>
-                    ) : (
-                      <div className="flex items-center gap-3.5 flex-1 min-w-0">
-                        <span className="text-xs font-bold text-slate-400 w-5">
+                  {/* Standard vs Custom Task Row */}
+                  {task.isCustom ? (
+                    <div className="flex-1 min-w-0 space-y-1.5 pr-1">
+                      <div className="flex items-center gap-2">
+                        <span className="text-xs font-bold text-slate-400 w-4 flex-shrink-0">
                           {idx + 1}.
                         </span>
-                        <div className="min-w-0 flex-1">
-                          <span className="text-base font-semibold text-slate-900 block truncate">
-                            {task.name}
-                          </span>
+                        <input
+                          type="text"
+                          value={task.name}
+                          onChange={(e) => {
+                            const updated = tasks.map((t) => t.id === task.id ? { ...t, name: e.target.value } : t);
+                            setTasks(updated);
+                          }}
+                          placeholder="Enter custom task name..."
+                          className="text-xs font-semibold px-2.5 py-1 bg-white text-slate-900 border border-slate-300 rounded-lg outline-none focus:border-black w-full"
+                          autoFocus
+                        />
+                      </div>
+                      <div className="ml-6">
+                        <input
+                          type="text"
+                          value={task.notes || ''}
+                          onChange={(e) => handleNotesChange(task.id, e.target.value)}
+                          placeholder="Configuration / Notes / Version (manual input)"
+                          className="text-[11px] px-2.5 py-1 bg-white text-slate-700 border border-slate-200 rounded-lg outline-none focus:border-black w-full"
+                        />
+                      </div>
+                    </div>
+                  ) : (
+                    <div className="flex-1 min-w-0 pr-1">
+                      <div className="flex items-center gap-2">
+                        <span className="text-xs font-bold text-slate-400 w-4 flex-shrink-0">
+                          {idx + 1}.
+                        </span>
+                        <span className="text-xs sm:text-sm font-semibold text-slate-900 truncate" title={task.name}>
+                          {task.name}
+                        </span>
+                      </div>
 
-                          {/* Clean Text Input for PHP Version (User types the version) */}
-                          {task.id === 'task-php-version' && (
-                            <div className="flex items-center gap-2 mt-2">
-                              <input
-                                type="text"
-                                value={task.meta?.phpVersion || ''}
-                                onChange={(e) => handleMetaChange(task.id, { ...task.meta, phpVersion: e.target.value })}
-                                placeholder="Type PHP version (e.g. PHP 8.3)"
-                                className="text-xs px-3 py-1.5 bg-slate-50 text-slate-900 border border-slate-300 rounded-lg outline-none focus:bg-white focus:border-black focus:ring-1 focus:ring-black w-60 placeholder:text-slate-400"
-                              />
-                              {task.meta?.phpVersion && (
-                                <button
-                                  type="button"
-                                  onClick={() => handleMetaChange(task.id, { ...task.meta, phpVersion: '' })}
-                                  className="text-[11px] text-slate-400 hover:text-rose-600"
-                                >
-                                  Clear
-                                </button>
-                              )}
-                            </div>
-                          )}
-
-                          {/* Clean Text Input for WordPress Core Upgrade (User types the version) */}
-                          {task.id === 'task-wp-core' && (
-                            <div className="flex items-center gap-2 mt-2">
-                              <input
-                                type="text"
-                                value={task.meta?.wpVersion || ''}
-                                onChange={(e) => handleMetaChange(task.id, { ...task.meta, wpVersion: e.target.value })}
-                                placeholder="Type WordPress version (e.g. 6.7.1)"
-                                className="text-xs px-3 py-1.5 bg-slate-50 text-slate-900 border border-slate-300 rounded-lg outline-none focus:bg-white focus:border-black focus:ring-1 focus:ring-black w-60 placeholder:text-slate-400"
-                              />
-                              {task.meta?.wpVersion && (
-                                <button
-                                  type="button"
-                                  onClick={() => handleMetaChange(task.id, { ...task.meta, wpVersion: '' })}
-                                  className="text-[11px] text-slate-400 hover:text-rose-600"
-                                >
-                                  Clear
-                                </button>
-                              )}
-                            </div>
-                          )}
-
-                          {task.notes && (
-                            <span className="text-xs text-slate-500 font-medium block truncate mt-1">
-                              {task.notes}
-                            </span>
+                      {/* Clean Text Input for PHP Version */}
+                      {task.id === 'task-php-version' && (
+                        <div className="flex items-center gap-1.5 mt-1.5 ml-6">
+                          <input
+                            type="text"
+                            value={task.meta?.phpVersion || ''}
+                            onChange={(e) => handleMetaChange(task.id, { ...task.meta, phpVersion: e.target.value })}
+                            placeholder="Type PHP version..."
+                            className="text-[11px] px-2.5 py-1 bg-white text-slate-900 border border-slate-300 rounded-lg outline-none focus:border-black w-full max-w-[200px]"
+                          />
+                          {task.meta?.phpVersion && (
+                            <button
+                              type="button"
+                              onClick={() => handleMetaChange(task.id, { ...task.meta, phpVersion: '' })}
+                              className="text-[11px] text-slate-400 hover:text-rose-600"
+                            >
+                              Clear
+                            </button>
                           )}
                         </div>
-                      </div>
-                    )}
+                      )}
 
-                    {/* Controls & Done/Undone Toggle Button (No config or note buttons) */}
-                    <div className="flex items-center gap-2.5 flex-shrink-0">
-                      {/* Remove Field Button */}
-                      <button
-                        type="button"
-                        onClick={() => removeTask(task.id)}
-                        className="p-1.5 text-slate-400 hover:text-rose-600 hover:bg-rose-50 rounded-lg transition-colors cursor-pointer"
-                        title="Remove this field from audit"
-                      >
-                        <Trash2 className="w-4 h-4" />
-                      </button>
+                      {/* Clean Text Input for WordPress Core Upgrade */}
+                      {task.id === 'task-wp-core' && (
+                        <div className="flex items-center gap-1.5 mt-1.5 ml-6">
+                          <input
+                            type="text"
+                            value={task.meta?.wpVersion || ''}
+                            onChange={(e) => handleMetaChange(task.id, { ...task.meta, wpVersion: e.target.value })}
+                            placeholder="Type WordPress version..."
+                            className="text-[11px] px-2.5 py-1 bg-white text-slate-900 border border-slate-300 rounded-lg outline-none focus:border-black w-full max-w-[200px]"
+                          />
+                          {task.meta?.wpVersion && (
+                            <button
+                              type="button"
+                              onClick={() => handleMetaChange(task.id, { ...task.meta, wpVersion: '' })}
+                              className="text-[11px] text-slate-400 hover:text-rose-600"
+                            >
+                              Clear
+                            </button>
+                          )}
+                        </div>
+                      )}
 
-                      {/* Explicit DONE / UNDONE Toggle Button */}
-                      <button
-                        type="button"
-                        onClick={() => toggleTaskStatus(task.id)}
-                        className={`px-4 py-2 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 shadow-sm border ${
-                          isDone
-                            ? 'bg-emerald-600 hover:bg-emerald-500 text-white border-emerald-500 shadow-emerald-900/30'
-                            : 'bg-rose-600/90 hover:bg-rose-600 text-white border-rose-500/80 shadow-rose-900/30'
-                        }`}
-                      >
-                        {isDone ? (
-                          <>
-                            <CheckCircle2 className="w-4 h-4" />
-                            Done
-                          </>
-                        ) : (
-                          <>
-                            <XCircle className="w-4 h-4" />
-                            Undone
-                          </>
-                        )}
-                      </button>
+                      {task.notes && (
+                        <div className="text-[11px] text-slate-500 font-medium truncate mt-0.5 ml-6">
+                          {task.notes}
+                        </div>
+                      )}
                     </div>
+                  )}
+
+                  {/* Controls & Done/Undone Toggle Button */}
+                  <div className="flex items-center gap-1.5 flex-shrink-0">
+                    <button
+                      type="button"
+                      onClick={() => toggleTaskStatus(task.id)}
+                      className={`px-2.5 py-1 rounded-lg text-[11px] font-bold transition-all flex items-center gap-1 shadow-2xs ${
+                        isDone
+                          ? 'bg-emerald-600 hover:bg-emerald-700 text-white'
+                          : 'bg-rose-600 hover:bg-rose-700 text-white'
+                      }`}
+                    >
+                      {isDone ? (
+                        <>
+                          <CheckCircle2 className="w-3.5 h-3.5" />
+                          Done
+                        </>
+                      ) : (
+                        <>
+                          <XCircle className="w-3.5 h-3.5" />
+                          Undone
+                        </>
+                      )}
+                    </button>
+
+                    <button
+                      type="button"
+                      onClick={() => removeTask(task.id)}
+                      className="p-1 text-slate-400 hover:text-rose-600 hover:bg-rose-50 rounded-lg transition-colors cursor-pointer"
+                      title="Remove this field from audit"
+                    >
+                      <Trash2 className="w-3.5 h-3.5" />
+                    </button>
                   </div>
                 </div>
               );

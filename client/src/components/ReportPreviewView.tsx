@@ -239,31 +239,10 @@ export const ReportPreviewView: React.FC<ReportPreviewViewProps> = ({
             {downloading ? 'Exporting PDF...' : 'Download PDF'}
           </button>
 
-          {/* Save to Google Sheet Button */}
-          <button
-            type="button"
-            onClick={handleSaveToSheet}
-            disabled={savingToSheet}
-            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-semibold shadow-xs transition-colors disabled:opacity-50 cursor-pointer"
-            title="Push this audit report directly to your connected Google Sheet"
-          >
-            <FileSpreadsheet className="w-3.5 h-3.5 text-white" />
-            <span>{savingToSheet ? 'Saving to Sheet...' : (sheetNotice ? '✓ Saved to Sheet' : 'Save to Sheet')}</span>
-          </button>
 
-          {/* Open Google Sheet */}
-          <a href="https://docs.google.com/spreadsheets/d/14CCuvMZ0L-ue5nTuIfndTPMKo_0Tdn0Fa3PDlQyVLK0/edit?gid=0#gid=0" target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-emerald-300 bg-emerald-50 hover:bg-emerald-100 text-emerald-800 text-xs font-semibold shadow-xs transition-colors"><FileSpreadsheet className="w-3.5 h-3.5 text-emerald-700" /><span>Open Sheet ↗</span></a>
+          
 
-          {/* Download Excel */}
-          <button
-            type="button"
-            onClick={handleDownloadExcel}
-            disabled={downloadingExcel}
-            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-semibold shadow-sm transition-colors disabled:opacity-50"
-          >
-            <FileSpreadsheet className="w-3.5 h-3.5" />
-            {downloadingExcel ? 'Exporting Excel...' : 'Download Excel'}
-          </button>
+
 
           {/* Save Report (if unsaved) */}
           {onSave && !isSaved && (
